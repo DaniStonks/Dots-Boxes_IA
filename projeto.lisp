@@ -102,5 +102,10 @@ A função verifica que os valores lidos pertencem ao intervale esperado para ca
              (format t "Estado: ~A | Profundidade: ~A | Heuristica: A~ | Custo: A~" (no-estado no-solucao) (no-profundidade no-solucao) (no-heuristica no-solucao) (no-custo no-solucao))
              (mostrar-solucao (no-pai no-solucao) abertos fechados)))))
 
+;; Análise de resultados
+(defun penetrancia (comprimento-objetivo num-nos-gerados)
+  (/ comprimento-objetivo num-nos-gerados))
 
+(defun bisseccao ()
+  )
 

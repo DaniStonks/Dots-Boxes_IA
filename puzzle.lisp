@@ -80,3 +80,18 @@
     (cond ((or (> pos-lista-arcos linhas)(> pos-arco colunas)) NIL)
           ((= 1 (get-arco-na-posicao pos-lista-arcos pos-arco arcos-ver)) NIL)
           (t (cons (car tabuleiro)(arco-na-posicao pos-lista-arcos pos-arco arcos-ver x))))))
+
+
+
+(defun no-solucaop (no)
+  (cond ((= (vasilha-a-conteudo no) 1) T)
+        ((= (vasilha-b-conteudo no) 1) T)
+        (t NIL)))
+
+(defun heuristica (estado)
+  (cond ((or (= 1 (first estado))(= 1 (second estado))) 0)
+        ((and (= (first estado) (second estado))(/= 1 (first estado))) 1)
+        (t 2))) 
+
+
+
