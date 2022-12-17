@@ -1,83 +1,95 @@
 ;;;; procura.lisp
-;;;; Funções dos métodos de procura
+;;;; Funcoes dos metodos de procura
 ;;;; Autor: Daniel Baptista, Rafael Silva
 
-;;; sucessores
-;; teste: (novo-sucessor (no-teste) 'encher-a)
-;; resultado: ((3 2) 1 ((2 2) 0 NIL))
-;; teste: (novo-sucessor (no-teste) 'transferir-a-b)
-;; resultado: ((0 4) 1 ((2 2) 0 NIL))
-;; teste: (novo-sucessor (cria-no '(3 5)) 'encher-a)
-;; resultado: NIL
-(defun novo-sucessor (no operador)
-  (let ((novo-estado (funcall operador (first no)))
-        (nova-profundidade (1+ (second no))))
-    (list novo-estado nova-profundidade no)))
+;;; Funcoes auxiliares da procura
+(defun ordenar-nos (lista-nos)
+    (sort lista-nos 'no-menorp))
 
-;; teste: (sucessores (no-teste) (operadores) 'bfs)
-;; resultado: (((0 2) 1 ((2 2) 0 NIL)) ((2 0) 1 ((2 2) 0 NIL)) ((3 2) 1 ((2 2) 0 NIL)) ((2 5) 1 ((2 2) 0 NIL)) ((0 4) 1 ((2 2) 0 NIL)) ((3 1) 1 ((2 2) 0 NIL)))
-;; teste: (sucessores (no-teste) (operadores) 'dfs 2)
-;; resultado: (((0 2) 1 ((2 2) 0 NIL)) ((2 0) 1 ((2 2) 0 NIL)) ((3 2) 1 ((2 2) 0 NIL)) ((2 5) 1 ((2 2) 0 NIL)) ((0 4) 1 ((2 2) 0 NIL)) ((3 1) 1 ((2 2) 0 NIL)))
-(defun sucessores (no operadores algoritmo &optional profundidade)
-  (cond ((and (eq algoritmo 'dfs) (= (second no) profundidade)) NIL)
-        ((null operadores) NIL)
-        (t (cons (novo-sucessor no (first operadores)) (sucessores no (rest operadores) algoritmo profundidade)))))
+(defun no-menorp (no1 no2)
+  (cond ((< (no-custo no1) (no-custo no2)) T)
+        (t NIL)))
 
+;;;Funcoes auxiliares dos metodos de procura
+(defun abertos-bfs (abertos fechados sucessores)
+  (append abertos (lista-elementos-diferentes sucessores (append fechados abertos))))
 
-;;;Algoritmos funções auxiliares
-;;;abertos-bfs
-(defun abertos-bfs (abertos sucessores)
-  (append abertos sucessores))
+(defun abertos-dfs (abertos fechados sucessores)
+  (let* ((novos-fechados (filtrar-nos fechados sucessores 'no-profundidade))
+         (sucessores-novos (lista-elementos-diferentes sucessores (append novos-fechados abertos)))) 
+    (list (append sucessores-novos abertos) novos-fechados)))
 
-;;;abertos-dfs
-(defun abertos-dfs (abertos sucessores)
-  (append sucessores abertos))
+(defun abertos-e-fechados-a* (abertos fechados sucessores)
+  "Esta funcao irá devolver uma lista com duas entradas, a primeira é pertencente aos novos nós abertos, depois de serem comparados com os nós sucessores. A segunda entrada é para os novos nós fechados, após tambem serem comparados com os nós sucessores"
+  (let* ((novos-fechados (filtrar-nos fechados sucessores 'no-custo))
+         (novos-abertos (filtrar-nos abertos sucessores 'no-custo))
+         (sucessores-a-adicionar (lista-elementos-diferentes sucessores (append novos-fechados novos-abertos))))
+    (list (ordenar-nos (append sucessores-a-adicionar novos-abertos)) novos-fechados)))
 
-;;no-existep
 (defun no-existep (no lista algoritmo)
   (cond ((null lista) NIL)
         ((equal (car no) (car (car lista))) T)
         (t (no-existep no (cdr lista) algoritmo))))
 
-;;; Algoritmos
+(defun obter-no-estado-igual (no lista)
+  (cond ((null lista) NIL)
+        ((equal (car no) (car (car lista))) (car lista))
+        (t (obter-no-estado-igual no (cdr lista)))))
+
+(defun filtrar-nos (lista-nos sucessores f-custo)
+  "Esta funcao irá receber uma lista de nos sucessores e outra lista que será de nos fechados e/ou abertos, de seguida ira filtrar essa lista, e dependendo do algoritmo retira os nos cujos estados estejam nos sucessores e tenham um custo ou profundidade menor"
+  (apply #'append (mapcar (lambda (no)
+                            (let ((no-igual-sucessor (obter-no-estado-igual no sucessores)))
+                              (cond ((and (not (null no-igual-sucessor))(> (funcall f-custo no) (funcall f-custo no-igual-sucessor))) NIL)
+                                    ((and (not (null no-igual-sucessor))(<= (funcall f-custo no) (funcall f-custo no-igual-sucessor))) (list no))
+                                    (t (list no)))))
+                          lista-nos)))
+
+(defun lista-elementos-diferentes (lista-a-filtrar lista-a-verificar)
+"Esta funcao irá devolver uma lista com os elementos diferentes da primeira lista em comparação com a segunda lista"
+  (apply #'append (mapcar (lambda (no)
+                            (cond ((null (no-estado no)) NIL)
+                                  ((no-existep no lista-a-verificar 'a*) NIL)
+                                  (t (list no))))
+                          lista-a-filtrar)))
+
+
+;;; Metodos de procura
 ;; procura na largura
-;; teste: (bfs (no-teste) 'no-solucaop 'sucessores (operadores) nil nil)
-;; resultado: ((3 1) 1 ((2 2) 0 NIL))
-(defun bfs (no f-objetivo f-sucessores operadores &optional abertos fechados)
-  (labels ((bfs-loop (abertos fechados)
-             (cond ((null abertos) NIL) ;;se a lista de nós abertos estiver vazia, o algoritmo acaba
-                   (t (let* ((no-expandir (first abertos)) ;no algoritmo bfs o nó a expandir é sempre o primeiro da lista de abertos
-                             (novos-fechados (append fechados (list no-expandir)))
-                             (sucessores-filtrados (remove nil (mapcar (lambda (no) ;verifica se os nós gerados já existem nos nós fechados
-                                                                         (cond ((no-existep no novos-fechados 'bfs) nil) 
-                                                                               (t no))) ;apenas são retornados os nós não presentes nos nós fechados
-                                                                       (funcall f-sucessores no-expandir operadores 'bfs))))
-                             (novos-abertos (abertos-dfs (cdr abertos) sucessores-filtrados)) ;expande o no escolhido, remove o mesmo nó da lista de nos abertos e junta o restante da lista de abertos com os novos sucessores da expansão
-                             (no-objetivo (apply #'append (mapcar (lambda (no) ;verifica se na lista de nós abertos algum deles é o nó solução, a seguir retira os NILs da lista
-                                                                    (cond ((funcall f-objetivo no) no) ;se o no a verificar for a solução retorna o no
-                                                                          (t NIL)))
-                                                                  novos-abertos))))
-                        (cond ((not (null no-objetivo)) no-objetivo) ;se a lista no-objetivo nao estiver vazia apos ter sido retirado os NILs, significa que foi encontrado o nó solução e este é devolvido, acabando o algoritmo
-                              (t (bfs-loop novos-abertos novos-fechados)))))))) ;adiciona o nó expandido a lista de nós fechados
-    (bfs-loop (list (append abertos no)) fechados)))
+(defun bfs (no f-objetivo f-sucessores operadores &optional num-solucao abertos fechados)
+  (let* ((novos-fechados (cons no fechados))
+        (novos-abertos (abertos-bfs abertos novos-fechados (funcall f-sucessores no operadores 'bfs nil)))
+        (no-solucao (apply #'append (mapcar (lambda (no)
+                                              (cond((funcall f-objetivo no num-solucao) no)
+                                                   (t NIL)))
+                                            novos-abertos))))
+    (cond ((null novos-abertos) NIL)
+          ((funcall f-objetivo no num-solucao) no)
+          ((not (null no-solucao)) no-solucao)
+          (t (bfs (car novos-abertos) f-objetivo f-sucessores operadores num-solucao (cdr novos-abertos) novos-fechados)))))
 
 ;; procura na profundidade
-;; teste: (dfs (no-teste) 'no-solucaop 'sucessores (operadores) 10)
-;; resultado: ((3 1) 1 ((2 2) 0 NIL))
-(defun dfs (no f-objetivo f-sucessores operadores profundidade &optional abertos fechados)
-  (labels ((dfs-loop (abertos fechados)
-             (cond ((null abertos) NIL) ;;se a lista de nós abertos estiver vazia, o algoritmo acaba
-                   (t (let* ((no-expandir (first abertos)) ;no algoritmo bfs o nó a expandir é sempre o primeiro da lista de abertos
-                             (novos-fechados (append fechados (list no-expandir)))
-                             (sucessores-filtrados (remove nil (mapcar (lambda (no) ;verifica se os nós gerados já existem nos nós fechados
-                                                                         (cond ((no-existep no novos-fechados 'dfs) nil) 
-                                                                               (t no))) ;apenas são retornados os nós não presentes nos nós fechados
-                                                                       (funcall f-sucessores no-expandir operadores 'dfs profundidade))))
-                             (novos-abertos (abertos-dfs (cdr abertos) sucessores-filtrados)) ;expande o no escolhido, remove o mesmo nó da lista de nos abertos e junta o restante da lista de abertos com os novos sucessores da expansão
-                             (no-objetivo (apply #'append (mapcar (lambda (no) ;verifica se na lista de nós abertos algum deles é o nó solução, a seguir retira os NILs da lista
-                                                                    (cond ((funcall f-objetivo no) no) ;se o no a verificar for a solução retorna o no
-                                                                          (t NIL)))
-                                                                  novos-abertos))))
-                        (cond ((not (null no-objetivo)) no-objetivo) ;se a lista no-objetivo nao estiver vazia apos ter sido retirado os NILs, significa que foi encontrado o nó solução e este é devolvido, acabando o algoritmo
-                              (t (dfs-loop novos-abertos novos-fechados)))))))) ;adiciona o nó expandido a lista de nós fechados
-    (dfs-loop (list (append abertos no)) fechados)))
+(defun dfs (no f-objetivo f-sucessores operadores profundidade &optional num-solucao abertos fechados)
+  (let* ((novos-sucessores-e-fechados (abertos-dfs abertos (cons no fechados) (funcall f-sucessores no operadores 'dfs nil 0 profundidade)))
+         (novos-abertos (car novos-sucessores-e-fechados))
+         (novos-fechados (car (cdr novos-sucessores-e-fechados)))
+         (no-solucao (apply #'append (mapcar (lambda (no)
+                                               (cond((funcall f-objetivo no num-solucao) no)
+                                                    (t NIL)))
+                                             novos-abertos))))
+    (cond ((null novos-abertos) NIL)
+          ((funcall f-objetivo no num-solucao) no)
+          ((not (null no-solucao)) no-solucao)
+          (t (dfs (car novos-abertos) f-objetivo f-sucessores operadores profundidade num-solucao (cdr novos-abertos) novos-fechados)))))
+
+;;procura informada
+(defun a* (no f-solucao f-sucessores operadores f-heuristica &optional num-solucao abertos fechados)
+  (let* ((novos-abertos-fechados (abertos-e-fechados-a* abertos (cons no fechados) (funcall f-sucessores no operadores 'a* f-heuristica)))
+         (novos-abertos (car novos-abertos-fechados))
+         (novos-fechados (car (cdr novos-abertos-fechados)))
+         (no-solucao (cond((funcall f-solucao (car novos-abertos)) (car novos-abertos))
+                          (t NIL))))
+    (cond ((null novos-abertos) NIL)
+          ((funcall f-solucao no) no)
+          ((not (null no-solucao)) no-solucao)
+          (t (a* (car novos-abertos) f-solucao f-sucessores operadores f-heuristica (cdr novos-abertos) novos-fechados)))))

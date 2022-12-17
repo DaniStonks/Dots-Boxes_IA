@@ -2,45 +2,27 @@
 ;;;; Funcoes de interacao com o utilizador e de escrita e leitura de ficheiros
 ;;;; Autor: Daniel Baptista, Rafael Silva
 
-;;; InicializaÃ§Ã£o do programa
+(load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\puzzle.lisp")
+(load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\procura.lisp")
+(setf *abertos* nil)
+(setf *fechados* nil)
+
+;;; Inicializacao do programa
 ;; iniciar
 (defun iniciar ()
 "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial e do algoritmo a utilizar para procurar a soluÃ§Ã£o (neste caso a procura na profundidade ou na largura)"
-  (let* ((no (cria-no (ler-vasilhas)))
+  (let* ((problema (ler-problema))
+         (no (cria-no (car problema)))
+         (num-solucao (second problema))
          (algoritmo (ler-algoritmo))
          (profundidade (cond ((eql algoritmo 'dfs) (ler-profundidade)) (T 9999))) )
 	(cond
-		((equal algoritmo 'bfs) (escreve-no (funcall algoritmo no 'no-solucaop 'sucessores (operadores))))
-		((equal algoritmo 'dfs) (escreve-no (funcall algoritmo no 'no-solucaop 'sucessores (operadores) profundidade)))
-                ((equal algoritmo 'a*) (escreve-no (funcall algoritmo no 'no-solucaop 'sucessores (operadores) 'heuristica)))
+		((equal algoritmo 'bfs) (mostrar-solucao (funcall algoritmo no 'no-solucaop 'sucessores (operadores) num-solucao *abertos* *fechados*) *abertos* *fechados*))
+		((equal algoritmo 'dfs) (mostrar-solucao (funcall algoritmo no 'no-solucaop 'sucessores (operadores) profundidade num-solucao *abertos* *fechados*) *abertos* *fechados*))
+                ((equal algoritmo 'a*) (mostrar-solucao (funcall algoritmo no 'no-solucaop 'sucessores (operadores) 'heuristica num-solucao *abertos* *fechados*) *abertos* *fechados*))
 	)
   )
 )
-
-;;; Input - interface que permite ler os valores iniciais das vasilhas junto do utilizador.
-(defun ler-no-inicial (&optional (f t))
-  (read f))
-
-(defun ler-vasilhas ()
-"Permite ler do teclado o estado inicial do problema das vasilhas."
-  (let ((vasilha-a (ler-vasilha "A")) (vasilha-b (ler-vasilha "B")))
-    (list vasilha-a vasilha-b)
-    )
-)
-
-(defun ler-vasilha (vasilha)
-"Permite ler do teclado o valor inicial de uma vasilha.
-A funÃ§Ã£o verifica que os valores lidos pertencem ao intervale esperado para cada vasilha."
-(progn
-    (format t "Insere o valor da vasilha ~A ~%" vasilha)
-    (let ((valor (read)))
-      (cond
-        ((AND (equal vasilha "A") (OR (> valor 3) (< valor 0))) (progn (format t "Valor invalido ~%") (ler-vasilha vasilha)))
-        ((AND (equal vasilha "B") (OR (> valor 5) (< valor 0))) (progn (format t "Valor invalido ~%") (ler-vasilha vasilha)))
-        (T valor)
-      )
-  )
-))
 
 ;; ler-algoritmo
 (defun ler-algoritmo ()
@@ -61,20 +43,30 @@ A funÃ§Ã£o verifica que os valores lidos pertencem ao intervale esperado para ca
 (defun ler-profundidade()
 "Permite fazer a leitura da profundidade limite para o algoritmo dfs."
     (progn
-    (format t "Qual a profundidade limite? ~%")
-    (read)
-    ))
+      (format t "Qual a profundidade limite? ~%")
+      (read)
+      ))
 
 (defun ler-problema ()
-  (let ((num-problema (read)))
-    (with-open-file (file "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ÂºAno\\1ÂºSemestre\\IA\\Proj\\Dots-Boxes_IA\\Problemas\\problemas.dat" :direction :input)
+  (let ((num-problema (progn
+                        (format t "Qual o problema a resolver? ")
+                        (read))))
+    (with-open-file (file "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\Problemas\\problemas.dat" :direction :input)
       (let ((line-number 0))
         (loop for line = (read file nil)
               while line do
                 (incf line-number)
                 (when (= line-number num-problema)
-                  (return (list line (read file nil)))))))))
+                  (return (list line (ler-solucao num-problema)))))))))
 
+(defun ler-solucao (num-problema)
+  (with-open-file (file "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\Problemas\\solucoes.dat" :direction :input)
+      (let ((line-number 0))
+        (loop for line = (read file nil)
+              while line do
+                (incf line-number)
+                (when (= line-number num-problema)
+                  (return line))))))
 
 ;;; Output - escrita do estado do problema
 ;;
@@ -99,7 +91,7 @@ A funÃ§Ã£o verifica que os valores lidos pertencem ao intervale esperado para ca
 (defun mostrar-solucao (no-solucao abertos fechados)
   (cond ((null no-solucao) (format t "Numero de nÃ³s gerados: ~A | Numero de nÃ³s expandidos: ~A" (+ (length abertos)(length fechados)) (length fechados)))
         (t (progn
-             (format t "Estado: ~A | Profundidade: ~A | Heuristica: A~ | Custo: A~" (no-estado no-solucao) (no-profundidade no-solucao) (no-heuristica no-solucao) (no-custo no-solucao))
+             (format t "Estado: ~A | Profundidade: ~A | Heuristica: ~A | Custo: ~A" (no-estado no-solucao) (no-profundidade no-solucao) (no-heuristica no-solucao) (no-custo no-solucao))
              (mostrar-solucao (no-pai no-solucao) abertos fechados)))))
 
 ;; AnÃ¡lise de resultados
