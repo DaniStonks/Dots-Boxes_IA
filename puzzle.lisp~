@@ -11,26 +11,33 @@
 
 (defun tabuleiro-teste ()
   "Retorna um tabuleiro 3x3 (3 arcos na vertical por 3 arcos na horizontal)"
-  '(
+  '((
     ((0 0 0) (0 0 1) (0 1 1) (0 0 1))
     ((0 0 0) (0 1 1) (1 0 1) (0 1 1))
-    ) 0 0 NIL)
+    ) 0 0 NIL))
+
+(defun tabuleiro-teste2 ()
+  "Retorna um tabuleiro 3x3 (3 arcos na vertical por 3 arcos na horizontal)"
+  '((
+    ((0 1 0) (0 1 1) (0 1 1) (0 1 1))
+    ((0 0 0) (1 1 1) (1 1 1) (0 1 1))
+    ) 0 0 NIL))
 
 ;;Seletores
 (defun no-estado (no)
   (first no))
 
-(defun get-arcos-horizontais (tabuleiro)
+(defun get-arcos-horizontais (tabuleiro-estado)
   "Retorna os arcos horizontais de um tabuleiro"
-  (first tabuleiro))
+  (first tabuleiro-estado))
 
-(defun get-arcos-verticais (tabuleiro)
+(defun get-arcos-verticais (tabuleiro-estado)
   "Retorna os arcos verticais de um tabuleiro"
-  (second tabuleiro))
+  (second tabuleiro-estado))
 
-(defun get-arco-na-posicao (pos-lista-arcos pos-arco tabuleiro)
+(defun get-arco-na-posicao (pos-lista-arcos pos-arco arcos)
   "Retorna o arco numa posicao passada por argumento de uma lista de arcos horizontais ou verticais"
-  (nth (1- pos-arco) (nth (1- pos-lista-arcos) tabuleiro)))
+  (nth (1- pos-arco) (nth (1- pos-lista-arcos) arcos)))
 
 (defun no-profundidade (no)
   (second no))
@@ -39,7 +46,7 @@
   (third no))
 
 (defun no-pai (no)
-  (fourth no)
+  (fourth no))
 
 (defun no-custo (no)
   (+ (third no) (second no)))
@@ -81,17 +88,47 @@
           ((= 1 (get-arco-na-posicao pos-lista-arcos pos-arco arcos-ver)) NIL)
           (t (cons (car tabuleiro)(arco-na-posicao pos-lista-arcos pos-arco arcos-ver x))))))
 
+(defun no-solucaop (no num-caixas-solucao)
+  (let ((num-caixas-fechadas (contar-caixas-fechadas (no-estado no))))
+    (cond ((= num-caixas-solucao num-caixas-fechadas) T)
+          (t NIL))))
 
+;;Teste: (contar-caixas-fechadas (no-estado (tabuleiro-teste)))
+;;Resultado: 1
+(defun contar-caixas-fechadas (estado &optional (l 1) (i 1))
+  (let* ((arcos-hor (get-arcos-horizontais estado))
+         (arcos-vert (get-arcos-verticais estado))
+         (num-total-arcos-hor (1- (length arcos-hor)))
+         (num-total-arcos-vert (1- (length arcos-vert))))
+    (labels ((iterar-tabuleiro (l i)
+               (let ((caixap (caixa-fechadap arcos-hor arcos-vert l i)))
+                 (cond ((> l num-total-arcos-hor) 0)
+                       ((and caixap (= i num-total-arcos-hor)) (+ 1 (iterar-tabuleiro (1+ l) 1)))
+                       (caixap (+ 1 (iterar-tabuleiro l (1+ i))))
+                       ((= i num-total-arcos-hor) (iterar-tabuleiro (1+ l) 1))
+                       (t (iterar-tabuleiro l (1+ i)))))))
+      (iterar-tabuleiro l i))))
 
-(defun no-solucaop (no)
-  (cond ((= (vasilha-a-conteudo no) 1) T)
-        ((= (vasilha-b-conteudo no) 1) T)
+;;Teste: (caixa-fechadap (get-arcos-horizontais (no-estado (tabuleiro-teste))) (get-arcos-verticais (no-estado(tabuleiro-teste))) 3 3)
+;;Resultado: T
+(defun caixa-fechadap(arcos-hor arcos-vert l i)
+  (cond ((and (= 1 (get-arco-na-posicao l i arcos-hor))(= 1 (get-arco-na-posicao (1+ l) i arcos-hor))
+              (= 1 (get-arco-na-posicao i l arcos-vert))(= 1 (get-arco-na-posicao (1+ i) l arcos-vert))) T)
         (t NIL)))
 
-(defun heuristica (estado)
-  (cond ((or (= 1 (first estado))(= 1 (second estado))) 0)
-        ((and (= (first estado) (second estado))(/= 1 (first estado))) 1)
-        (t 2))) 
+(defun heuristica (estado num-caixas-a-fechar)
+  (- num-caixas-a-fechar (contar-caixas-fechadas estado)))
 
+;;; sucessores
+(defun novo-sucessor (no operador heuristica)
+  (let* ((novo-estado (funcall operador (first no)))
+        (nova-profundidade (1+ (second no)))
+        (valor-heuristica (cond ((or(null heuristica)(null novo-estado)) 0)
+                                (t (funcall heuristica novo-estado)))))
+    (list novo-estado nova-profundidade valor-heuristica no)))
 
+(defun sucessores (no operadores algoritmo heuristica &optional profundidade)
+  (cond ((and (eq algoritmo 'dfs) (= (second no) profundidade)) NIL)
+        ((null operadores) NIL)
+        (t (cons (novo-sucessor no (first operadores) heuristica) (sucessores no (rest operadores) algoritmo heuristica profundidade)))))
 

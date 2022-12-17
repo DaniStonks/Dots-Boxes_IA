@@ -10,20 +10,6 @@
   (cond ((< (no-custo no1) (no-custo no2)) T)
         (t NIL)))
 
-;;; sucessores
-(defun novo-sucessor (no operador heuristica)
-  (let* ((novo-estado (funcall operador (first no)))
-        (nova-profundidade (1+ (second no)))
-        (valor-heuristica (cond ((or(null heuristica)(null novo-estado)) 0)
-                                (t (funcall heuristica novo-estado)))))
-    (list novo-estado nova-profundidade valor-heuristica no)))
-
-(defun sucessores (no operadores algoritmo heuristica &optional profundidade)
-  (cond ((and (eq algoritmo 'dfs) (= (second no) profundidade)) NIL)
-        ((null operadores) NIL)
-        (t (cons (novo-sucessor no (first operadores) heuristica) (sucessores no (rest operadores) algoritmo heuristica profundidade)))))
-
-
 ;;;Funcoes auxiliares dos metodos de procura
 (defun abertos-bfs (abertos fechados sucessores)
   (append abertos (lista-elementos-diferentes sucessores (append fechados abertos))))
