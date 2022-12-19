@@ -13,7 +13,7 @@
   "Retorna um tabuleiro 3x3 (3 arcos na vertical por 3 arcos na horizontal)"
   '((
     ((0 0 0) (0 0 1) (0 1 1) (0 0 1))
-    ((0 0 0) (0 1 1) (1 0 1) (0 1 1))
+    ((0 0 0) (0 1 0) (0 0 1) (0 1 1))
     ) 0 0 NIL))
 
 ;;Seletores
@@ -86,6 +86,25 @@
     (cond ((= num-caixas-solucao num-caixas-fechadas) T)
           (t NIL))))
 
+
+;;;;;;;;;;;;;;;;;;;
+;;; Heuristicas ;;;
+;;;;;;;;;;;;;;;;:;;
+
+;;primeira heuristica - h(x) = o(x) - c(x)
+;;o(x) - numero de arcos minimos necessarios para resolver o problema
+;;c(x) - numero de arcos colocados de forma a fazer uma caixa
+(defun heuristica-base (estado num-caixas-a-fechar)
+  (- num-caixas-a-fechar (contar-caixas-fechadas estado)))
+
+;;segunda heuristica - h(x) = w * (o(x) - c(x)) + (1 - w) * a(x)
+;;o(x) - numero de arcos minimos necessarios para resolver o problema
+;;c(x) - numero de arcos colocados de forma a fazer uma caixa
+;;a(x) - numero de caixas com apenas 1 lado livre
+;;w - fator de ponderação
+(defun heuristica-melhorada (estado num-caixas-a-fechar)
+  (+ (* (- num-caixas-a-fechar (contar-caixas-fechadas estado)) 0.10) (* (contar-caixas-perto-fechar estado) 0.90)))
+
 ;;Teste: (contar-caixas-fechadas (no-estado (tabuleiro-teste)))
 ;;Resultado: 1
 (defun contar-caixas-fechadas (estado &optional (l 1) (i 1))
@@ -109,10 +128,34 @@
               (= 1 (get-arco-na-posicao i l arcos-vert))(= 1 (get-arco-na-posicao (1+ i) l arcos-vert))) T)
         (t NIL)))
 
-(defun heuristica (estado num-caixas-a-fechar)
-  (- num-caixas-a-fechar (contar-caixas-fechadas estado)))
+;;Teste: (contar-caixas-perto-fechar (no-estado (tabuleiro-teste)))
+;;Resultado: 1
+(defun contar-caixas-perto-fechar (estado &optional (l 1) (i 1))
+  (let* ((arcos-hor (get-arcos-horizontais estado))
+         (arcos-vert (get-arcos-verticais estado))
+         (num-total-arcos-hor (1- (length arcos-hor)))
+         (num-total-indices-hor (length (car arcos-hor))))
+    (labels ((iterar-tabuleiro (l i)
+               (cond ((> l num-total-arcos-hor) 0)
+                     (t (let ((caixa (estado-caixa arcos-hor arcos-vert l i)))
+                          (cond ((and (= caixa 3) (= i num-total-indices-hor)) (+ 1 (iterar-tabuleiro (1+ l) 1)))
+                                ((= caixa 3) (+ 1 (iterar-tabuleiro l (1+ i))))
+                                ((= i num-total-indices-hor) (iterar-tabuleiro (1+ l) 1))
+                                (t (iterar-tabuleiro l (1+ i)))))))))
+      (iterar-tabuleiro l i))))
 
-;;; sucessores
+;;Teste: (caixa-fechadap (get-arcos-horizontais (no-estado (tabuleiro-teste))) (get-arcos-verticais (no-estado(tabuleiro-teste))) 3 3)
+;;Resultado: T
+(defun estado-caixa(arcos-hor arcos-vert l i)
+  (let ((lado-1 (get-arco-na-posicao l i arcos-hor))
+        (lado-2 (get-arco-na-posicao (1+ l) i arcos-hor))
+        (lado-3 (get-arco-na-posicao i l arcos-vert))
+        (lado-4 (get-arco-na-posicao (1+ i) l arcos-vert)))
+    (+ lado-1 lado-2 lado-3 lado-4)))
+
+;;;;;;;;;;;;;;;;;;
+;;; Sucessores ;;;
+;;;;;;;;;;;;;;;;;;
 (defun novo-sucessor (no l i operador &optional (heuristica nil) (num-solucao 0))
   (let* ((novo-estado (funcall operador l i (no-estado no) 1))
         (nova-profundidade (1+ (second no)))

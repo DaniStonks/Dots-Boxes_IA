@@ -4,25 +4,24 @@
 
 (load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3∫Ano\\1∫Semestre\\IA\\Proj\\Dots-Boxes_IA\\puzzle.lisp")
 (load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3∫Ano\\1∫Semestre\\IA\\Proj\\Dots-Boxes_IA\\procura.lisp")
-(setf *abertos* nil)
-(setf *fechados* nil)
 
 ;;; Inicializacao do programa
 ;; iniciar
 (defun iniciar ()
-"Permite iniciar o programa, fazendo a leitura do teclado do estado inicial e do algoritmo a utilizar para procurar a solu√ß√£o (neste caso a procura na profundidade ou na largura)"
+  "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial e do algoritmo a utilizar para procurar a solu√ß√£o (neste caso a procura na profundidade ou na largura)"
+  (setf *abertos* nil)
+  (setf *fechados* nil)
   (let* ((problema (ler-problema))
          (no (cria-no (car problema)))
          (num-solucao (second problema))
          (algoritmo (ler-algoritmo))
-         (profundidade (cond ((eql algoritmo 'dfs) (ler-profundidade)) (T 9999))) )
-	(cond
-		((equal algoritmo 'bfs) (mostrar-solucao (funcall algoritmo no 'no-solucaop 'sucessores (operadores) num-solucao *abertos* *fechados*) *abertos* *fechados*))
-		((equal algoritmo 'dfs) (mostrar-solucao (funcall algoritmo no 'no-solucaop 'sucessores (operadores) profundidade num-solucao *abertos* *fechados*) *abertos* *fechados*))
-                ((equal algoritmo 'a*) (escreve-no (funcall algoritmo no 'no-solucaop 'sucessores (operadores) 'heuristica)))
-	)
-  )
-)
+         (heuristica (cond ((eql algoritmo 'a*) (ler-heuristica)) (t NIL)))
+         (profundidade (cond ((eql algoritmo 'dfs) (ler-profundidade)) (T 9999))))
+    (cond
+         ((equal algoritmo 'bfs) (mostrar-solucao (funcall algoritmo no 'no-solucaop 'sucessores (operadores) num-solucao *abertos* *fechados*)))
+         ((equal algoritmo 'dfs) (mostrar-solucao (funcall algoritmo no 'no-solucaop 'sucessores (operadores) profundidade num-solucao *abertos* *fechados*)))
+         ((equal algoritmo 'a*) (mostrar-solucao (funcall algoritmo no 'no-solucaop 'sucessores (operadores) heuristica num-solucao *abertos* *fechados*)))
+         )))
 
 ;; ler-algoritmo
 (defun ler-algoritmo ()
@@ -46,6 +45,18 @@
       (format t "Qual a profundidade limite? ~%")
       (read)
       ))
+
+;; ler-profundidade
+(defun ler-heuristica()
+"Permite fazer a leitura da heuristica a usar para o algoritmo a*."
+    (progn
+      (format t "Qual a heuristica a usar? ~%")
+      (format t "1 - Numero de caixas fechadas ~%")
+      (format t "2 - Numero de caixas fechadas e numero de caixas perto de fechar ~%")
+      (let ((resposta (read)))
+        (cond ((= resposta 1) 'heuristica-base)
+              ((= resposta 2) 'heuristica-melhorada)
+              (t 'heuristica-melhorada)))))
 
 (defun ler-problema ()
   (let ((num-problema (progn
@@ -88,16 +99,15 @@
    ((null lista) nil)
    (T (progn (escreve-no (car lista)) (escreve-lista-nos (cdr lista))))))
 
-(defun mostrar-solucao (no-solucao abertos fechados)
-  (cond ((null no-solucao) (format t "Numero de n√≥s gerados: ~A | Numero de n√≥s expandidos: ~A" (+ (length abertos)(length fechados)) (length fechados)))
+(defun mostrar-solucao (no-solucao)
+  (cond ((null no-solucao) (format t "Numero de nÛs gerados: ~A | Numero de nÛs expandidos: ~A" (+ (length *abertos*)(length *fechados*)) (length *fechados*)))
         (t (progn
-             (format t "Estado: ~A | Profundidade: ~A | Heuristica: ~A | Custo: ~A" (no-estado no-solucao) (no-profundidade no-solucao) (no-heuristica no-solucao) (no-custo no-solucao))
-             (mostrar-solucao (no-pai no-solucao) abertos fechados)))))
+             (format t "Estado: ~A | Profundidade: ~A | Heuristica: ~A | Custo: ~A ~%" (no-estado no-solucao) (no-profundidade no-solucao) (no-heuristica no-solucao) (no-custo no-solucao))
+             (mostrar-solucao (no-pai no-solucao))))))
 
-;; An√°lise de resultados
+;; Analise de resultados
 (defun penetrancia (comprimento-objetivo num-nos-gerados)
   (/ comprimento-objetivo num-nos-gerados))
 
 (defun bisseccao ()
   )
-
