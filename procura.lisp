@@ -38,7 +38,7 @@
 
 (defun filtrar-nos (lista-nos sucessores f-custo)
   "Esta funcao irá receber uma lista de nos sucessores e outra lista que será de nos fechados e/ou abertos, de seguida ira filtrar essa lista, e dependendo do algoritmo retira os nos cujos estados estejam nos sucessores e tenham um custo ou profundidade menor"
-  (remove nil (mapcar (lambda (no)
+  (apply #'append (mapcar (lambda (no)
                             (let ((no-igual-sucessor (obter-no-estado-igual no sucessores)))
                               (cond ((and (not (null no-igual-sucessor))(> (funcall f-custo no) (funcall f-custo no-igual-sucessor))) NIL)
                                     ((and (not (null no-igual-sucessor))(<= (funcall f-custo no) (funcall f-custo no-igual-sucessor))) no)
@@ -47,7 +47,7 @@
 
 (defun lista-elementos-diferentes (lista-a-filtrar lista-a-verificar)
 "Esta funcao irá devolver uma lista com os elementos diferentes da primeira lista em comparacao com a segunda lista"
-  (remove nil (mapcar (lambda (no)
+  (apply #'append (mapcar (lambda (no)
                             (cond ((null (no-estado no)) NIL)
                                   ((no-existep no lista-a-verificar 'a*) NIL)
                                   (t no)))
@@ -59,14 +59,16 @@
 (defun bfs (no f-objetivo f-sucessores operadores &optional num-solucao abertos fechados)
   (let* ((novos-fechados (cons no fechados))
         (novos-abertos (abertos-bfs abertos novos-fechados (funcall f-sucessores no operadores 'bfs nil)))
-        (no-solucao (remove nil (mapcar (lambda (no)
+        (no-solucao (apply #'append (mapcar (lambda (no)
                                               (cond((funcall f-objetivo no num-solucao) no)
                                                    (t NIL)))
                                             novos-abertos))))
+    (setf *abertos* novos-abertos)
+    (setf *fechados* novos-fechados)
     (cond ((null novos-abertos) NIL)
           ((funcall f-objetivo no num-solucao) no)
           ((not (null no-solucao)) no-solucao)
-          (t (bfs (car novos-abertos) f-objetivo f-sucessores operadores num-solucao (cdr novos-abertos) novos-fechados)))))
+          (t (bfs (car *abertos*) f-objetivo f-sucessores operadores num-solucao (cdr *abertos*) *fechados*)))))
 
 ;; procura na profundidade
 (defun dfs (no f-objetivo f-sucessores operadores profundidade &optional num-solucao abertos fechados)
@@ -77,10 +79,13 @@
                                                (cond((funcall f-objetivo no num-solucao) no)
                                                     (t NIL)))
                                              novos-abertos))))
+    (setf *abertos* novos-abertos)
+    (setf *fechados* novos-fechados)
     (cond ((null novos-abertos) NIL)
           ((funcall f-objetivo no num-solucao) no)
-          ((not (null no-solucao)) no-solucao)
-          (t (dfs (car novos-abertos) f-objetivo f-sucessores operadores profundidade num-solucao (cdr novos-abertos) novos-fechados)))))
+          ((not (null no-solucao)) (cond ((/= (length no-solucao) 1) (car no-solucao))
+                                         (t no-solucao)))
+          (t (dfs (car *abertos*) f-objetivo f-sucessores operadores profundidade num-solucao (cdr *abertos*) *fechados*)))))
 
 ;;procura informada
 (defun a* (no f-solucao f-sucessores operadores f-heuristica &optional num-solucao abertos fechados)
