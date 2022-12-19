@@ -103,7 +103,7 @@
 ;;a(x) - numero de caixas com apenas 1 lado livre
 ;;w - fator de ponderação
 (defun heuristica-melhorada (estado num-caixas-a-fechar)
-  (+ (* (- num-caixas-a-fechar (contar-caixas-fechadas estado)) (- 1 0.67)) (* (contar-caixas-perto-fechar estado) 0.67)))
+  (+ (* (- num-caixas-a-fechar (contar-caixas-fechadas estado)) 0.10) (* (contar-caixas-perto-fechar estado) 0.90)))
 
 ;;Teste: (contar-caixas-fechadas (no-estado (tabuleiro-teste)))
 ;;Resultado: 1

@@ -38,7 +38,7 @@
 
 (defun filtrar-nos (lista-nos sucessores f-custo)
   "Esta funcao irá receber uma lista de nos sucessores e outra lista que será de nos fechados e/ou abertos, de seguida ira filtrar essa lista, e dependendo do algoritmo retira os nos cujos estados estejam nos sucessores e tenham um custo ou profundidade menor"
-  (apply #'append (mapcar (lambda (no)
+  (remove nil (mapcar (lambda (no)
                             (let ((no-igual-sucessor (obter-no-estado-igual no sucessores)))
                               (cond ((and (not (null no-igual-sucessor))(> (funcall f-custo no) (funcall f-custo no-igual-sucessor))) NIL)
                                     ((and (not (null no-igual-sucessor))(<= (funcall f-custo no) (funcall f-custo no-igual-sucessor))) no)
@@ -47,7 +47,7 @@
 
 (defun lista-elementos-diferentes (lista-a-filtrar lista-a-verificar)
 "Esta funcao irá devolver uma lista com os elementos diferentes da primeira lista em comparacao com a segunda lista"
-  (apply #'append (mapcar (lambda (no)
+  (remove nil (mapcar (lambda (no)
                             (cond ((null (no-estado no)) NIL)
                                   ((no-existep no lista-a-verificar 'a*) NIL)
                                   (t no)))
@@ -59,7 +59,7 @@
 (defun bfs (no f-objetivo f-sucessores operadores &optional num-solucao abertos fechados)
   (let* ((novos-fechados (cons no fechados))
         (novos-abertos (abertos-bfs abertos novos-fechados (funcall f-sucessores no operadores 'bfs nil)))
-        (no-solucao (apply #'append (mapcar (lambda (no)
+        (no-solucao (remove nil (mapcar (lambda (no)
                                               (cond((funcall f-objetivo no num-solucao) no)
                                                    (t NIL)))
                                             novos-abertos))))
@@ -75,7 +75,7 @@
   (let* ((novos-sucessores-e-fechados (abertos-dfs abertos (cons no fechados) (funcall f-sucessores no operadores 'dfs nil 0 profundidade)))
          (novos-abertos (car novos-sucessores-e-fechados))
          (novos-fechados (car (cdr novos-sucessores-e-fechados)))
-         (no-solucao (apply #'append (mapcar (lambda (no)
+         (no-solucao (remove nil (mapcar (lambda (no)
                                                (cond((funcall f-objetivo no num-solucao) no)
                                                     (t NIL)))
                                              novos-abertos))))
