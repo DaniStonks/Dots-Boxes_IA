@@ -2,13 +2,14 @@
 ;;;; Funcoes de interacao com o utilizador e de escrita e leitura de ficheiros
 ;;;; Autor: Daniel Baptista, Rafael Silva
 
-(load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\puzzle.lisp")
-(load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\procura.lisp")
+(load "C:\\Users\\202001990\\Documents\\GitHub\\Dots-Boxes_IA\\puzzle.lisp")
+(load "C:\\Users\\202001990\\Documents\\GitHub\\Dots-Boxes_IA\\procura.lisp")
 
-;;; Inicializacao do programa
-;; iniciar
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Inicializacao do programa ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun iniciar ()
-  "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial e do algoritmo a utilizar para procurar a solução (neste caso a procura na profundidade ou na largura)"
+  "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial, do algoritmo, a heuristica e a profundidade se utilizadas"
   (setf *abertos* nil)
   (setf *fechados* nil)
   (let* ((problema (ler-problema))
@@ -17,15 +18,18 @@
          (algoritmo (ler-algoritmo))
          (heuristica (cond ((eql algoritmo 'a*) (ler-heuristica)) (t NIL)))
          (profundidade (cond ((eql algoritmo 'dfs) (ler-profundidade)) (T 9999)))
+         (tempo-execucao (get-internal-run-time))
          (no-solucao (cond
                       ((equal algoritmo 'bfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) num-solucao *abertos* *fechados*))
                       ((equal algoritmo 'dfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) profundidade num-solucao *abertos* *fechados*))
                       ((equal algoritmo 'a*) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) heuristica num-solucao *abertos* *fechados*)))))
     (progn 
-      (mostrar-solucao no-solucao) 
-      (escrever-no no-solucao algoritmo))))
+      (mostrar-solucao no-solucao (- (get-internal-real-time) tempo-execucao)) 
+      (escrever-no-log no-solucao algoritmo))))
 
-;; ler-algoritmo
+;;;;;;;;;;;;;
+;; Leitura ;;
+;;;;;;;;;;;;;
 (defun ler-algoritmo ()
 "Permite fazer a leitura do algoritmo a utilizar."
   (progn
@@ -40,7 +44,6 @@
     )
   )
 
-;; ler-profundidade
 (defun ler-profundidade()
 "Permite fazer a leitura da profundidade limite para o algoritmo dfs."
     (progn
@@ -48,7 +51,6 @@
       (read)
       ))
 
-;; ler-profundidade
 (defun ler-heuristica()
 "Permite fazer a leitura da heuristica a usar para o algoritmo a*."
     (progn
@@ -64,7 +66,7 @@
   (let ((num-problema (progn
                         (format t "Qual o problema a resolver? ")
                         (read))))
-    (with-open-file (file "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\Problemas\\problemas.dat" :direction :input)
+    (with-open-file (file "C:\\Users\\202001990\\Documents\\GitHub\\Dots-Boxes_IA\\Problemas\\problemas.dat" :direction :input)
       (let ((line-number 0))
         (loop for line = (read file nil)
               while line do
@@ -73,7 +75,7 @@
                   (return (list line (ler-solucao num-problema)))))))))
 
 (defun ler-solucao (num-problema)
-  (with-open-file (file "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\Problemas\\solucoes.dat" :direction :input)
+  (with-open-file (file "C:\\Users\\202001990\\Documents\\GitHub\\Dots-Boxes_IA\\Problemas\\solucoes.dat" :direction :input)
       (let ((line-number 0))
         (loop for line = (read file nil)
               while line do
@@ -81,11 +83,13 @@
                 (when (= line-number num-problema)
                   (return line))))))
 
-;;; Output - escrita do estado do problema
-;;
+
+;;;;;;;;;;;;;
+;; Escrita ;;
+;;;;;;;;;;;;;
 (defun escrever-no-log (no-solucao algoritmo)
   "Permite escrever no final do ficheiro log.dat as seguintes informações do problema, o estado inicial, a solução encontrada, o número de nós gerados e o número de nós expandidos"
-  (with-open-file (stream "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\Problemas\\log.dat"
+  (with-open-file (stream "C:\\Users\\202001990\\Documents\\GitHub\\Dots-Boxes_IA\\Problemas\\log.dat"
                          :direction :output
                          :if-exists :append
                          :if-does-not-exist :create)
@@ -101,21 +105,16 @@
         (format t "Estado: ~A | Profundidade: ~A | Heuristica: ~A | Custo: ~A ~%" (no-estado lista) (no-profundidade lista) (no-heuristica lista) (no-custo lista)) 
         (escreve-lista-nos (no-pai lista))))))
 
-(defun mostrar-solucao (no-solucao)
+(defun mostrar-solucao (no-solucao tempo-execucao)
   (progn
     (escreve-lista-nos no-solucao)
-    (format t "Numero de nós gerados: ~A | Numero de nós expandidos: ~A | Penetrância: ~A" (+ (length *abertos*)(length *fechados*)) (length *fechados*) (penetrancia (no-profundidade no-solucao) (+ (length *abertos*)(length *fechados*))))))
+    (format t "Numero de nós gerados: ~A | Numero de nós expandidos: ~A | Penetrância: ~A | Tempo de execução: ~A" (+ (length *abertos*)(length *fechados*)) (length *fechados*) (penetrancia (no-profundidade no-solucao) (+ (length *abertos*)(length *fechados*) tempo-execucao)))))
 
-;; Analise de resultados
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Analise de resultados ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun penetrancia (comprimento-objetivo num-nos-gerados)
   (/ comprimento-objetivo num-nos-gerados))
 
 (defun bisseccao ()
   )
-
-;;;Funções auxiliares
-(defun estado-no-inicial(no-solucao)
-  "Permite saber o estado inicial de um nó"
-  (cond ((null (no-pai no-solucao)) (no-estado no-solucao))
-        (t (estado-no-inicial (no-pai no-solucao))))
-)

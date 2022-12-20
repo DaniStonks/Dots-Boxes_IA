@@ -44,6 +44,12 @@
 (defun no-custo (no)
   (+ (third no) (second no)))
 
+(defun estado-no-inicial(no-solucao)
+  "Permite saber o estado inicial de um nó"
+  (cond ((null (no-pai no-solucao)) (no-estado no-solucao))
+        (t (estado-no-inicial (no-pai no-solucao))))
+)
+
 
 ;;Funcoes Auxiliares
 (defun substituir (indice lista &optional (x 1))
@@ -114,9 +120,9 @@
          (num-total-indices-hor (length (car arcos-hor))))
     (labels ((iterar-tabuleiro (l i)
                (cond ((> l num-total-arcos-hor) 0)
-                     (t (let ((caixap (caixa-fechadap arcos-hor arcos-vert l i)))
-                          (cond ((and caixap (= i num-total-indices-hor)) (+ 1 (iterar-tabuleiro (1+ l) 1)))
-                                (caixap (+ 1 (iterar-tabuleiro l (1+ i))))
+                     (t (let ((caixa (estado-caixa arcos-hor arcos-vert l i)))
+                          (cond ((and (= caixa 4) (= i num-total-indices-hor)) (+ 1 (iterar-tabuleiro (1+ l) 1)))
+                                ((= caixa 4) (+ 1 (iterar-tabuleiro l (1+ i))))
                                 ((= i num-total-indices-hor) (iterar-tabuleiro (1+ l) 1))
                                 (t (iterar-tabuleiro l (1+ i)))))))))
       (iterar-tabuleiro l i))))
@@ -151,7 +157,8 @@
         (lado-2 (get-arco-na-posicao (1+ l) i arcos-hor))
         (lado-3 (get-arco-na-posicao i l arcos-vert))
         (lado-4 (get-arco-na-posicao (1+ i) l arcos-vert)))
-    (+ lado-1 lado-2 lado-3 lado-4)))
+    (cond ((and (null lado-1) (null lado-2) (null lado-3) (null lado-4)) 0)
+          (t (+ lado-1 lado-2 lado-3 lado-4)))))
 
 ;;;;;;;;;;;;;;;;;;
 ;;; Sucessores ;;;
