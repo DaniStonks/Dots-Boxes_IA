@@ -84,7 +84,7 @@
     (cond ((null novos-abertos) NIL)
           ((funcall f-objetivo no num-solucao) no)
           ((not (null no-solucao)) (cond ((/= (length no-solucao) 1) (car no-solucao))
-                                         (t no-solucao)))
+                                         (t (car no-solucao))))
           (t (dfs (car *abertos*) f-objetivo f-sucessores operadores profundidade num-solucao (cdr *abertos*) *fechados*)))))
 
 ;;procura informada

@@ -23,7 +23,7 @@
                       ((equal algoritmo 'a*) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) heuristica num-solucao *abertos* *fechados*)))))
     (progn 
       (mostrar-solucao no-solucao) 
-      (escrever-no no-solucao algoritmo))))
+      (escrever-no-log no-solucao algoritmo))))
 
 ;; ler-algoritmo
 (defun ler-algoritmo ()
@@ -83,13 +83,15 @@
 
 ;;; Output - escrita do estado do problema
 ;;
-(defun escrever-no (no-solucao algoritmo)
+(defun escrever-no-log (no-solucao algoritmo)
   "Permite escrever no final do ficheiro log.dat as seguintes informações do problema, o estado inicial, a solução encontrada, o número de nós gerados e o número de nós expandidos"
   (with-open-file (stream "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\Problemas\\log.dat"
                          :direction :output
                          :if-exists :append
                          :if-does-not-exist :create)
-  (format stream "Estado inicial: ~A | Solução encontrada: ~A | Número de nós gerados: ~A | Número de nós expandidos: ~A ~% ~%" (estado-no-inicial no-solucao) (no-estado no-solucao) (+ (length *abertos*)(length *fechados*)) (length *fechados*))))
+    (progn
+      (format stream "Algoritmo utilizado - ~A ~%" algoritmo)
+      (format stream "Estado inicial: ~A | Solução encontrada: ~A | Número de nós gerados: ~A | Número de nós expandidos: ~A ~% ~%" (estado-no-inicial no-solucao) (no-estado no-solucao) (+ (length *abertos*)(length *fechados*)) (length *fechados*)))))
 
 (defun escreve-lista-nos (lista)
   "Permite escrever no ecra uma lista de nos do problema das vasilhas, e.g. um conjunto de sucessores, a lista de abertos etc."
