@@ -2,6 +2,10 @@
 ;;;; Funcoes dos metodos de procura
 ;;;; Autor: Daniel Baptista, Rafael Silva
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; Fun珲es auxiliares ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Funcoes auxiliares da procura
 (defun ordenar-nos (lista-nos)
     (sort lista-nos 'no-menorp))
@@ -9,22 +13,6 @@
 (defun no-menorp (no1 no2)
   (cond ((< (no-custo no1) (no-custo no2)) T)
         (t NIL)))
-
-;;;Funcoes auxiliares dos metodos de procura
-(defun abertos-bfs (abertos fechados sucessores)
-  (append abertos (lista-elementos-diferentes sucessores (append fechados abertos))))
-
-(defun abertos-dfs (abertos fechados sucessores)
-  (let* ((novos-fechados (filtrar-nos fechados sucessores 'no-profundidade))
-         (sucessores-novos (lista-elementos-diferentes sucessores (append novos-fechados abertos)))) 
-    (list (append sucessores-novos abertos) novos-fechados)))
-
-(defun abertos-e-fechados-a* (abertos fechados sucessores)
-  "Esta funcao ir谩 devolver uma lista com duas entradas, a primeira 茅 pertencente aos novos n贸s abertos, depois de serem comparados com os n贸s sucessores. A segunda entrada 茅 para os novos n贸s fechados, ap贸s tambem serem comparados com os n贸s sucessores"
-  (let* ((novos-fechados (filtrar-nos fechados sucessores 'no-custo))
-         (novos-abertos (filtrar-nos abertos sucessores 'no-custo))
-         (sucessores-a-adicionar (lista-elementos-diferentes sucessores (append novos-fechados novos-abertos))))
-    (list (ordenar-nos (append sucessores-a-adicionar novos-abertos)) novos-fechados)))
 
 (defun no-existep (no lista algoritmo)
   (cond ((null lista) NIL)
@@ -45,6 +33,22 @@
                                     (t no))))
                           lista-nos)))
 
+;;;Funcoes auxiliares dos metodos de procura
+(defun abertos-bfs (abertos fechados sucessores)
+  (append abertos (lista-elementos-diferentes sucessores (append fechados abertos))))
+
+(defun abertos-dfs (abertos fechados sucessores)
+  (let* ((novos-fechados (filtrar-nos fechados sucessores 'no-profundidade))
+         (sucessores-novos (lista-elementos-diferentes sucessores (append novos-fechados abertos)))) 
+    (list (append sucessores-novos abertos) novos-fechados)))
+
+(defun abertos-e-fechados-a* (abertos fechados sucessores)
+  "Esta funcao ir谩 devolver uma lista com duas entradas, a primeira 茅 pertencente aos novos n贸s abertos, depois de serem comparados com os n贸s sucessores. A segunda entrada 茅 para os novos n贸s fechados, ap贸s tambem serem comparados com os n贸s sucessores"
+  (let* ((novos-fechados (filtrar-nos fechados sucessores 'no-custo))
+         (novos-abertos (filtrar-nos abertos sucessores 'no-custo))
+         (sucessores-a-adicionar (lista-elementos-diferentes sucessores (append novos-fechados novos-abertos))))
+    (list (ordenar-nos (append sucessores-a-adicionar novos-abertos)) novos-fechados)))
+
 (defun lista-elementos-diferentes (lista-a-filtrar lista-a-verificar)
 "Esta funcao ir谩 devolver uma lista com os elementos diferentes da primeira lista em comparacao com a segunda lista"
   (remove nil (mapcar (lambda (no)
@@ -53,9 +57,11 @@
                                   (t no)))
                           lista-a-filtrar)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; Metodos de procura ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Metodos de procura
-;; procura na largura
+;;procura na largura
 (defun bfs (no f-objetivo f-sucessores operadores &optional num-solucao abertos fechados)
   (let* ((novos-fechados (cons no fechados))
         (novos-abertos (abertos-bfs abertos novos-fechados (funcall f-sucessores no operadores 'bfs nil)))
@@ -67,7 +73,8 @@
     (setf *fechados* novos-fechados)
     (cond ((null novos-abertos) NIL)
           ((funcall f-objetivo no num-solucao) no)
-          ((not (null no-solucao)) no-solucao)
+          ((not (null no-solucao)) (cond ((/= (length no-solucao) 1) (car no-solucao))
+                                         (t (car no-solucao))))
           (t (bfs (car *abertos*) f-objetivo f-sucessores operadores num-solucao (cdr *abertos*) *fechados*)))))
 
 ;; procura na profundidade

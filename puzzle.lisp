@@ -16,7 +16,21 @@
     ((0 0 0) (0 1 0) (0 0 1) (0 1 1))
     ) 0 0 NIL))
 
-;;Seletores
+;;Funcoes Auxiliares
+(defun substituir (indice lista &optional (x 1))
+  "Dada uma lista e um indice, substitui o valor nessa posicao por outro passado por argumento"
+  (cond ((null lista) nil)
+        ((= (1- indice) 0) (cons x (substituir (1- indice) (cdr lista) x)))
+        (t (cons (car lista) (substituir (1- indice) (cdr lista) x)))))
+
+(defun arco-na-posicao (pos-lista-arcos pos-arco lista-arcos &optional (x 1))
+  "Insere um arco nos arcos horizontais ou verticais de um tabuleiro, na posicao escolhida"
+  (cond ((= (1- pos-lista-arcos) 0) (cons (substituir pos-arco (car lista-arcos) x) (cdr lista-arcos)))
+        (t (cons (car lista-arcos) (arco-na-posicao (1- pos-lista-arcos) pos-arco (cdr lista-arcos) x)))))
+
+;;;;;;;;;;;;;;;;;;
+;;; Selectores ;;;
+;;;;;;;;;;;;;;;;;;
 (defun no-estado (no)
   (first no))
 
@@ -44,21 +58,15 @@
 (defun no-custo (no)
   (+ (third no) (second no)))
 
+(defun estado-no-inicial(no-solucao)
+  "Permite saber o estado inicial de um nó"
+  (cond ((null (no-pai no-solucao)) (no-estado no-solucao))
+        (t (estado-no-inicial (no-pai no-solucao))))
+)
 
-;;Funcoes Auxiliares
-(defun substituir (indice lista &optional (x 1))
-  "Dada uma lista e um indice, substitui o valor nessa posicao por outro passado por argumento"
-  (cond ((null lista) nil)
-        ((= (1- indice) 0) (cons x (substituir (1- indice) (cdr lista) x)))
-        (t (cons (car lista) (substituir (1- indice) (cdr lista) x)))))
-
-(defun arco-na-posicao (pos-lista-arcos pos-arco lista-arcos &optional (x 1))
-  "Insere um arco nos arcos horizontais ou verticais de um tabuleiro, na posicao escolhida"
-  (cond ((= (1- pos-lista-arcos) 0) (cons (substituir pos-arco (car lista-arcos) x) (cdr lista-arcos)))
-        (t (cons (car lista-arcos) (arco-na-posicao (1- pos-lista-arcos) pos-arco (cdr lista-arcos) x)))))
-
-
-;;Operadores
+;;;;;;;;;;;;;;;;;;
+;;; Operadores ;;;
+;;;;;;;;;;;;;;;;;;
 (defun operadores ()
  "Cria uma lista com todos os operadores do problema das vasilhas."
  (list 'arco-horizontal 'arco-vertical))
@@ -103,7 +111,7 @@
 ;;a(x) - numero de caixas com apenas 1 lado livre
 ;;w - fator de ponderação
 (defun heuristica-melhorada (estado num-caixas-a-fechar)
-  (+ (* (- num-caixas-a-fechar (contar-caixas-fechadas estado)) 0.10) (* (contar-caixas-perto-fechar estado) 0.90)))
+  (+ (* (- num-caixas-a-fechar (contar-caixas-fechadas estado)) 0.67) (* (contar-caixas-perto-fechar estado) 0.33)))
 
 ;;Teste: (contar-caixas-fechadas (no-estado (tabuleiro-teste)))
 ;;Resultado: 1
@@ -164,7 +172,6 @@
                                 (t (funcall heuristica novo-estado num-solucao)))))
     (list novo-estado nova-profundidade valor-heuristica no)))
 
-;;Teste: (sucessores (tabuleiro-teste) (operadores) 'a* 'heuristica 5)
 (defun sucessores (no operadores algoritmo &optional (heuristica nil) (num-solucao 0) profundidade)
   (cond ((and (eq algoritmo 'dfs) (= (second no) profundidade)) NIL)
         (t (let* ((arcos-hor (get-arcos-horizontais (no-estado no)))

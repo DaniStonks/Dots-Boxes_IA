@@ -5,27 +5,41 @@
 (load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\puzzle.lisp")
 (load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\procura.lisp")
 
-;;; Inicializacao do programa
-;; iniciar
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Inicializacao do programa ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun iniciar ()
-  "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial e do algoritmo a utilizar para procurar a solução (neste caso a procura na profundidade ou na largura)"
+  "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial, do algoritmo, a heuristica e a profundidade se utilizadas"
   (setf *abertos* nil)
   (setf *fechados* nil)
-  (let* ((problema (ler-problema))
+  (let* ((diretoria (ler-diretoria))
+         (problema (ler-problema diretoria))
          (no (cria-no (car problema)))
          (num-solucao (second problema))
          (algoritmo (ler-algoritmo))
          (heuristica (cond ((eql algoritmo 'a*) (ler-heuristica)) (t NIL)))
          (profundidade (cond ((eql algoritmo 'dfs) (ler-profundidade)) (T 9999)))
+         (tempo-execucao-inicial (get-internal-real-time))
          (no-solucao (cond
                       ((equal algoritmo 'bfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) num-solucao *abertos* *fechados*))
                       ((equal algoritmo 'dfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) profundidade num-solucao *abertos* *fechados*))
-                      ((equal algoritmo 'a*) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) heuristica num-solucao *abertos* *fechados*)))))
+                      ((equal algoritmo 'a*) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) heuristica num-solucao *abertos* *fechados*))))
+         (tempo-execucao (obter-tempo-execucao-em-segundos tempo-execucao-inicial (get-internal-real-time))))
     (progn 
-      (mostrar-solucao no-solucao) 
-      (escrever-no-log no-solucao algoritmo))))
+      (mostrar-solucao no-solucao tempo-execucao)
+      (escrever-no-log no-solucao algoritmo heuristica tempo-execucao diretoria))))
 
-;; ler-algoritmo
+;;;;;;;;;;;;;
+;; Leitura ;;
+;;;;;;;;;;;;;
+
+(defun ler-diretoria()
+"Permite fazer a leitura da diretoria do programa"
+    (progn
+      (format t "Qual a diretoria em que o programa reside?~%")
+      (read-line)
+      ))
+
 (defun ler-algoritmo ()
 "Permite fazer a leitura do algoritmo a utilizar."
   (progn
@@ -40,7 +54,6 @@
     )
   )
 
-;; ler-profundidade
 (defun ler-profundidade()
 "Permite fazer a leitura da profundidade limite para o algoritmo dfs."
     (progn
@@ -48,7 +61,6 @@
       (read)
       ))
 
-;; ler-profundidade
 (defun ler-heuristica()
 "Permite fazer a leitura da heuristica a usar para o algoritmo a*."
     (progn
@@ -60,20 +72,26 @@
               ((= resposta 2) 'heuristica-melhorada)
               (t 'heuristica-melhorada)))))
 
-(defun ler-problema ()
+(defun ler-problema (diretoria)
   (let ((num-problema (progn
-                        (format t "Qual o problema a resolver? ")
+                        (format t "Qual o problema a resolver? ~%~%")
+                        (format t "1 - Tabuleiro 3x3 (Objetivo: 3 caixas)~%")
+                        (format t "2 - Tabuleiro 4x4 (Objetivo: 7 caixas)~%")
+                        (format t "3 - Tabuleiro 4x4 (Objetivo: 10 caixas)~%")
+                        (format t "4 - Tabuleiro 5x4 (Objetivo: 10 caixas)~%")
+                        (format t "5 - Tabuleiro 6x6 (Objetivo: 20 caixas)~%")
+                        (format t "6 - Tabuleiro 7x7 (Objetivo: 35 caixas)~%")
                         (read))))
-    (with-open-file (file "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\Problemas\\problemas.dat" :direction :input)
+    (with-open-file (file (concatenate 'string diretoria "\\Problemas\\problemas.dat") :direction :input)
       (let ((line-number 0))
         (loop for line = (read file nil)
               while line do
                 (incf line-number)
                 (when (= line-number num-problema)
-                  (return (list line (ler-solucao num-problema)))))))))
+                  (return (list line (ler-solucao num-problema diretoria)))))))))
 
-(defun ler-solucao (num-problema)
-  (with-open-file (file "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\Problemas\\solucoes.dat" :direction :input)
+(defun ler-solucao (num-problema diretoria)
+  (with-open-file (file (concatenate 'string diretoria "\\Problemas\\solucoes.dat") :direction :input)
       (let ((line-number 0))
         (loop for line = (read file nil)
               while line do
@@ -81,41 +99,60 @@
                 (when (= line-number num-problema)
                   (return line))))))
 
-;;; Output - escrita do estado do problema
-;;
-(defun escrever-no-log (no-solucao algoritmo)
+
+;;;;;;;;;;;;;
+;; Escrita ;;
+;;;;;;;;;;;;;
+(defun escrever-no-log (no-solucao algoritmo heuristica tempo-execucao diretoria)
   "Permite escrever no final do ficheiro log.dat as seguintes informações do problema, o estado inicial, a solução encontrada, o número de nós gerados e o número de nós expandidos"
-  (with-open-file (stream "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\Problemas\\log.dat"
+  (with-open-file (stream (concatenate 'string diretoria "\\Problemas\\log.dat")
                          :direction :output
                          :if-exists :append
                          :if-does-not-exist :create)
-    (progn
-      (format stream "Algoritmo utilizado - ~A ~%" algoritmo)
-      (format stream "Estado inicial: ~A | Solução encontrada: ~A | Número de nós gerados: ~A | Número de nós expandidos: ~A ~% ~%" (estado-no-inicial no-solucao) (no-estado no-solucao) (+ (length *abertos*)(length *fechados*)) (length *fechados*)))))
+    (let ((nos-gerados (+ (length *abertos*)(length *fechados*)))
+          (nos-expandidos (length *fechados*)))
+      (progn
+        (format stream "Algoritmo utilizado - ~A ;~@[~A~] ~%" algoritmo heuristica)
+        (format stream "Solução encontrada: ~A ~%" (no-estado no-solucao))
+        (format stream "Estado inicial: ~A ~%" (estado-no-inicial no-solucao))
+        (format stream "Número de nós gerados: ~A | Número de nós expandidos: ~A ~%" nos-gerados nos-expandidos)
+        (format stream "Penetrância: ~A | Factor de ramificação medio: ~A | Tempo de execução: ~A ~%" (penetrancia (no-profundidade no-solucao) nos-gerados) (bisseccao 'f-fator-ramificacao 0 10 no-solucao) tempo-execucao)
+        (format stream "Caminho ~%")
+        (escreve-lista-nos no-solucao stream)
+        (format stream "~% ~% ~%")))))
 
-(defun escreve-lista-nos (lista)
+(defun escreve-lista-nos (lista &optional (stream t))
   "Permite escrever no ecra uma lista de nos do problema das vasilhas, e.g. um conjunto de sucessores, a lista de abertos etc."
   (cond
    ((null lista) nil)
    (T (progn 
-        (format t "Estado: ~A | Profundidade: ~A | Heuristica: ~A | Custo: ~A ~%" (no-estado lista) (no-profundidade lista) (no-heuristica lista) (no-custo lista)) 
-        (escreve-lista-nos (no-pai lista))))))
+        (format stream "Estado: ~A | Profundidade: ~A | Heuristica: ~A | Custo: ~A ~%" (no-estado lista) (no-profundidade lista) (no-heuristica lista) (no-custo lista)) 
+        (escreve-lista-nos (no-pai lista) stream)))))
 
-(defun mostrar-solucao (no-solucao)
+(defun mostrar-solucao (no-solucao tempo-execucao)
   (progn
     (escreve-lista-nos no-solucao)
-    (format t "Numero de nós gerados: ~A | Numero de nós expandidos: ~A | Penetrância: ~A" (+ (length *abertos*)(length *fechados*)) (length *fechados*) (penetrancia (no-profundidade no-solucao) (+ (length *abertos*)(length *fechados*))))))
+    (format t "Numero de nós gerados: ~A | Numero de nós expandidos: ~A | Penetrância: ~A | Factor de ramificação média: ~A | Tempo de execução: ~A segundos ~%" (+ (length *abertos*)(length *fechados*)) (length *fechados*) (penetrancia (no-profundidade no-solucao) (+ (length *abertos*) (length *fechados*))) (bisseccao 'f-fator-ramificacao 0 10 no-solucao) tempo-execucao)))
 
-;; Analise de resultados
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Analise de resultados ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun penetrancia (comprimento-objetivo num-nos-gerados)
-  (/ comprimento-objetivo num-nos-gerados))
+  (float (/ comprimento-objetivo num-nos-gerados)))
 
-(defun bisseccao ()
-  )
+(defun bisseccao (f a b no-solucao &optional (tolerancia 0.00001))
+  (let ((fa (funcall f a no-solucao))
+        (fb (funcall f b no-solucao)))
+    (cond ((< (/ (- b a) 2) tolerancia) (float (/ (+ a b) 2)))
+           ( t(and (< fa 0) (> fb 0)) (let* ((p-med (/ (+ a b) 2))
+                                             (fc (funcall f p-med no-solucao)))
+                                        (cond ((< fc 0) (bisseccao f p-med b no-solucao))
+                                              (t (bisseccao f a p-med no-solucao))))))))
 
-;;;Funções auxiliares
-(defun estado-no-inicial(no-solucao)
-  "Permite saber o estado inicial de um nó"
-  (cond ((null (no-pai no-solucao)) (no-estado no-solucao))
-        (t (estado-no-inicial (no-pai no-solucao))))
-)
+(defun f-fator-ramificacao (x no-solucao)
+  (let ((comp-sol (no-profundidade no-solucao))
+        (total-nos (+ (length *abertos*)(length *fechados*))))
+    (- (/ (* x (- (expt x comp-sol) 1))  (- x 1)) total-nos)))
+
+(defun obter-tempo-execucao-em-segundos (tempo-inicial tempo-final)
+  (float (/ (- tempo-final tempo-inicial) 1000)))
