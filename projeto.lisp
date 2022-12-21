@@ -2,9 +2,6 @@
 ;;;; Funcoes de interacao com o utilizador e de escrita e leitura de ficheiros
 ;;;; Autor: Daniel Baptista, Rafael Silva
 
-(load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\puzzle.lisp")
-(load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\procura.lisp")
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Inicializacao do programa ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -13,22 +10,21 @@
   (setf *abertos* nil)
   (setf *fechados* nil)
   (let* ((diretoria (ler-diretoria))
+         (ignorar (carregar-ficheiros diretoria))
          (problema (ler-problema diretoria))
          (no (cria-no (car problema)))
          (num-solucao (second problema))
          (algoritmo (ler-algoritmo))
          (heuristica (cond ((eql algoritmo 'a*) (ler-heuristica)) (t NIL)))
-         (profundidade (cond ((eql algoritmo 'dfs) (ler-profundidade)) (T 9999))))
-    (progn 
-      (carregar-ficheiros diretoria)
-      (let* ((tempo-execucao-inicial (get-internal-real-time))
-             (no-solucao (cond
-                          ((equal algoritmo 'bfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) num-solucao *abertos* *fechados*))
-                          ((equal algoritmo 'dfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) profundidade num-solucao *abertos* *fechados*))
-                          ((equal algoritmo 'a*) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) heuristica num-solucao *abertos* *fechados*))))
-             (tempo-execucao (obter-tempo-execucao-em-segundos tempo-execucao-inicial (get-internal-real-time))))
-        (mostrar-solucao no-solucao tempo-execucao)
-        (escrever-no-log no-solucao algoritmo heuristica tempo-execucao diretoria)))))
+         (profundidade (cond ((eql algoritmo 'dfs) (ler-profundidade)) (T 9999)))
+         (tempo-execucao-inicial (get-internal-real-time))
+         (no-solucao (cond
+                      ((equal algoritmo 'bfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) num-solucao *abertos* *fechados*))
+                      ((equal algoritmo 'dfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) profundidade num-solucao *abertos* *fechados*))
+                      ((equal algoritmo 'a*) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) heuristica num-solucao *abertos* *fechados*))))
+         (tempo-execucao (obter-tempo-execucao-em-segundos tempo-execucao-inicial (get-internal-real-time))))
+    (mostrar-solucao no-solucao tempo-execucao)
+    (escrever-no-log no-solucao algoritmo heuristica tempo-execucao diretoria)))
 
 (defun carregar-ficheiros (diretoria)
   (progn

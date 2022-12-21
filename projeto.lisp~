@@ -2,9 +2,6 @@
 ;;;; Funcoes de interacao com o utilizador e de escrita e leitura de ficheiros
 ;;;; Autor: Daniel Baptista, Rafael Silva
 
-(load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\puzzle.lisp")
-(load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\procura.lisp")
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Inicializacao do programa ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -13,6 +10,7 @@
   (setf *abertos* nil)
   (setf *fechados* nil)
   (let* ((diretoria (ler-diretoria))
+         (ignorar (carregar-ficheiros))
          (problema (ler-problema diretoria))
          (no (cria-no (car problema)))
          (num-solucao (second problema))
@@ -20,7 +18,6 @@
          (heuristica (cond ((eql algoritmo 'a*) (ler-heuristica)) (t NIL)))
          (profundidade (cond ((eql algoritmo 'dfs) (ler-profundidade)) (T 9999))))
     (progn 
-      (carregar-ficheiros diretoria)
       (let* ((tempo-execucao-inicial (get-internal-real-time))
              (no-solucao (cond
                           ((equal algoritmo 'bfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) num-solucao *abertos* *fechados*))
@@ -118,7 +115,7 @@
     (let ((nos-gerados (+ (length *abertos*)(length *fechados*)))
           (nos-expandidos (length *fechados*)))
       (progn
-        (format stream "Algoritmo utilizado - ~A ;~@[~A~] ~%" algoritmo heuristica)
+        (format stream "Algoritmo utilizado - ~A, ~@[~A~] ~%" algoritmo heuristica)
         (format stream "Solução encontrada: ~A ~%" (no-estado no-solucao))
         (format stream "Estado inicial: ~A ~%" (estado-no-inicial no-solucao))
         (format stream "Número de nós gerados: ~A | Número de nós expandidos: ~A ~%" nos-gerados nos-expandidos)
