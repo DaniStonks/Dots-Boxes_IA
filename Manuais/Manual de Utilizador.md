@@ -69,7 +69,7 @@ Para utilizar o programa é necessária realizar os seguintes passos:
 
 **7.** Escolher com que algoritmo quer resolver o problema escolhido.
 
-## 5. Input/Output  
+## 4. Input/Output  
 
 ### **Input**
 
@@ -97,11 +97,11 @@ Para utilizar o programa é necessária realizar os seguintes passos:
 * **Heurística usada** - Qual a heurística utilizada, só quando se usa o algoritmo **A***.
 * **Número de nós gerados** - É o número de nós que foram necessários criar para chegar ao nó solução.
 * **Número de nós expandidos** - É o número de nós que foram necessários percorrer para chegar ao nó solução.
-* **Penetrância** - 
-* **Fator de ramificação média** - 
+* **Penetrância** - É uma medida de eficiência que varia entre 0 e 1 e que quanto mais perto de 0 melhor é o algoritmo usado.
+* **Fator de ramificação média** - É uma medida de eficiência em que o intervalo de variação é entre 1 e $+\infty$ e que quanto mais perto de 1 melhor, pois significa que só é necessario ter 1 sucessor para chegar a solução ótima.
 * **Tempo de Execução** - É o tempo, em segundos, que o programa demorou a chegar ao nó solução.
 
-## 6. Exemplo de aplicação
+## 5. Exemplo de aplicação
 
 1. O utilizador deverá executar a função iniciar como já referido anteriormente.
 
