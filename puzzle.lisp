@@ -107,23 +107,20 @@
 ;;;;;;;;;;;;;;;;:;;
 
 ;;primeira heuristica - h(x) = o(x) - c(x)
-;;o(x) - numero de arcos minimos necessarios para resolver o problema
-;;c(x) - numero de arcos colocados de forma a fazer uma caixa
+;;o(x) - numero de caixas necessarias para acabar o problema
+;;c(x) - numero de caixas fechadas
 (defun heuristica-base (estado num-caixas-a-fechar)
   (- num-caixas-a-fechar (contar-caixas-fechadas estado)))
 
-;;segunda heuristica - h(x) = (w * (o(x) - c(x))) - ((1 - w) * a(x)) - ((1 - w) * b(x))
-;;o(x) - numero de arcos minimos necessarios para resolver o problema
-;;c(x) - numero de arcos colocados de forma a fazer uma caixa
-;;a(x) - numero de caixas com apenas 1 lado livre
-;;w - fator de ponderação
+;;segunda heuristica - h(x) = (w * (o(x) - c(x))) - (w2 * a(x)) - (w3 * b(x))
+;;o(x) - numero de caixas necessarias para acabar o problema
+;;c(x) - numero de caixas fechadas
+;;a(x) - numero de caixas com 3 lados fechados
+;;b(x) - numero de caixas com 2 lados fechados
+;;w1, w2, w3 - fatores de ponderação
 (defun heuristica-melhorada (estado num-caixas-a-fechar)
   (let ((estado-caixas (obter-estado-caixas estado)))
-    (- (- num-caixas-a-fechar (contar-ocorrencias-elemento estado-caixas 4)) (contar-ocorrencias-elemento estado-caixas 3) (contar-ocorrencias-elemento estado-caixas 2))))
-
-(defun heuristica-melhorada2 (estado num-caixas-a-fechar &optional (peso 0.8))
-  (let ((estado-caixas (obter-estado-caixas estado)))
-    (- (* (- num-caixas-a-fechar (contar-ocorrencias-elemento estado-caixas 4)) peso) (* (contar-ocorrencias-elemento estado-caixas 3) (- 1.2 peso)) (* (contar-ocorrencias-elemento estado-caixas 2) (- 1 peso)))))
+    (- (* (- num-caixas-a-fechar (contar-ocorrencias-elemento estado-caixas 4)) 10) (* (contar-ocorrencias-elemento estado-caixas 3) 6) (* (contar-ocorrencias-elemento estado-caixas 2) 3))))
 
 ;;Teste: (contar-caixas-fechadas (no-estado (tabuleiro-teste)))
 ;;Resultado: (0 0 1 1 2 3 0 2 4), isto significa que existem 3 caixas sem lados preenchidos, 2 com 1 lado, 2 com 2 lados, 1 com 3 lados e 1 fechada.

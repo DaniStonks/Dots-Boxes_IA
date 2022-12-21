@@ -74,6 +74,10 @@
               ((= resposta 2) 'heuristica-melhorada)
               (t 'heuristica-melhorada)))))
 
+(defun ler-ficheiro (linha-a-ler ficheiro &optional (linha 0))
+  (cond ((= linha-a-ler linha) (read ficheiro nil))
+        (t (ler-ficheiro linha-a-ler ficheiro (1+ linha)))))
+
 (defun ler-problema (diretoria)
   (let ((num-problema (progn
                         (format t "Qual o problema a resolver? ~%~%")
@@ -85,21 +89,11 @@
                         (format t "6 - Tabuleiro 7x7 (Objetivo: 35 caixas)~%")
                         (read))))
     (with-open-file (file (concatenate 'string diretoria "\\Problemas\\problemas.dat") :direction :input)
-      (let ((line-number 0))
-        (loop for line = (read file nil)
-              while line do
-                (incf line-number)
-                (when (= line-number num-problema)
-                  (return (list line (ler-solucao num-problema diretoria)))))))))
+      (list (ler-ficheiro num-problema file) (ler-solucao num-problema diretoria)))))
 
 (defun ler-solucao (num-problema diretoria)
   (with-open-file (file (concatenate 'string diretoria "\\Problemas\\solucoes.dat") :direction :input)
-      (let ((line-number 0))
-        (loop for line = (read file nil)
-              while line do
-                (incf line-number)
-                (when (= line-number num-problema)
-                  (return line))))))
+      (ler-ficheiro num-problema file)))
 
 
 ;;;;;;;;;;;;;

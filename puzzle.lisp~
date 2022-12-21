@@ -117,9 +117,13 @@
 ;;c(x) - numero de arcos colocados de forma a fazer uma caixa
 ;;a(x) - numero de caixas com apenas 1 lado livre
 ;;w - fator de ponderação
+(defun heuristica-melhorada2 (estado num-caixas-a-fechar)
+  (let ((estado-caixas (obter-estado-caixas estado)))
+    (- (* (- num-caixas-a-fechar (contar-ocorrencias-elemento estado-caixas 4)) 2) (contar-ocorrencias-elemento estado-caixas 3) (contar-ocorrencias-elemento estado-caixas 2))))
+
 (defun heuristica-melhorada (estado num-caixas-a-fechar &optional (peso 0.8))
   (let ((estado-caixas (obter-estado-caixas estado)))
-    (- (* (- num-caixas-a-fechar (contar-ocorrencias-elemento estado-caixas 4)) peso) (* (contar-ocorrencias-elemento estado-caixas 3) (- 1.2 peso)) (* (contar-ocorrencias-elemento estado-caixas 2) (- 1 peso)))))
+    (- (* (- num-caixas-a-fechar (contar-ocorrencias-elemento estado-caixas 4)) 10) (* (contar-ocorrencias-elemento estado-caixas 3) 6) (* (contar-ocorrencias-elemento estado-caixas 2) 3))))
 
 ;;Teste: (contar-caixas-fechadas (no-estado (tabuleiro-teste)))
 ;;Resultado: (0 0 1 1 2 3 0 2 4), isto significa que existem 3 caixas sem lados preenchidos, 2 com 1 lado, 2 com 2 lados, 1 com 3 lados e 1 fechada.
