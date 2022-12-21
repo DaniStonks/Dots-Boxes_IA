@@ -165,7 +165,11 @@ A complexidade algoritmica é de $O(b^d)$, em que **$d$** é a profundidade máx
 
 É um algoritmo que se diz "_informado_" ao contrário dos outros dois algoritmos mencionados, este algoritmo usa metodos heurísticos para encontrar uma solução ótima da maneira mais eficiente possível.
 \
-
+Posto isto precisa-se de calcular que ramo iremos pesquisar para posteriormente o expandir, usando este método heurístico: $f(n)=g(n)+h(n)$
+\
+Em que $f$ é o custo total, $g$ o custo real e $h$ o custo heuristico que indica quanto falta para chegar ao nó final.
+\
+A complexidade algoritmica é de $O(b^d)$, em que **$d$** é a profundidade máxima e **$b$** o fator de ramificação médio.
 
 #### **Possivel forma de implementação do A***
 
@@ -180,7 +184,9 @@ A complexidade algoritmica é de $O(b^d)$, em que **$d$** é a profundidade máx
 
 #### **Características do A***
 
-* 
+* Utilização de métodos heurísticos para determinar o próximo nó a ser expandido
+* É possivel encontrar a solução ótima caso a heuristica usada seja admissível
+* Pode-se concluir teoricamente que será o algoritmo mais eficiente do que os outros 2 mencionados.
 
 #### **Implementação feita no projeto**
 
