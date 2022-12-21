@@ -74,9 +74,10 @@
               ((= resposta 2) 'heuristica-melhorada)
               (t 'heuristica-melhorada)))))
 
-(defun ler-ficheiro (linha-a-ler ficheiro &optional (linha 0))
-  (cond ((= linha-a-ler linha) (read ficheiro nil))
-        (t (ler-ficheiro linha-a-ler ficheiro (1+ linha)))))
+(defun ler-ficheiro (linha-a-ler ficheiro &optional (linha 1))
+  (let ((linha-lida (read ficheiro nil)))
+    (cond ((= linha-a-ler linha) linha-lida)
+          (t (ler-ficheiro linha-a-ler ficheiro (1+ linha))))))
 
 (defun ler-problema (diretoria)
   (let ((num-problema (progn
