@@ -30,49 +30,57 @@
 
 É o módulo da aplicação onde estão localizadas todas as funções usadas pelos algoritmos e a implementação dos proprios algoritmos e este módulo pode ser usado genericamente por outros módulos.
 
-#### **Têm como Objetivo**
+#### **O Módulo de Procura têm como Objetivo**
 
 Ser utilizado como biblioteca generica onde estão presentes os três algoritmos implementados (**BFS, DFS e A***), ou seja, poderá ser utilizado noutro problema qualquer que necessite o uso de um destes algoritmos.
 
-#### **Conexões**
+#### **Conexões do Módulo de Procura**
 
-...
+* projeto.lisp;
 
-#### **Relacionamento entre as conexões**
+#### **Relacionamento entre as conexões do Módulo de Procura**
 
-...
+* Relacionamento deste módulo(procura.lisp) com o projeto.lisp é de modo a poder se utilizar os algoritmos de pesquisa em espaço de estados.
 
 ### **Módulo da Interface com utilizador - projeto.lisp**
 
 É o módulo da aplicação em que é criada a interface para a interação com o utilizador e ainda a leitura e escrita de feicheiros externos.
 
-#### **Têm como Objetivo**
+#### **O Módulo da Interface com utilizar têm como Objetivo**
 
 Ser utilizado para fazer a ligação entre o programa e o utilizador através de uma interface gráfica.
 
-#### **Conexões**
+#### **Conexões do Módulo da Interface com utilizador**
 
-...
+* puzzle.lisp;
+* procura.lisp;
+* problemas.dat;
+* solucoes.dat;
+* log.dat;
 
-#### **Relacionamento entre as conexões**
+#### **Relacionamento entre as conexões do Módulo da Interface com utilizador**
 
-...
+* O Relacionamento deste módulo(projeto.lisp) com o _puzzle.lisp_ é de modo a obter as funções especificas do dominio do jogo "**Dots and Boxes**"
+* O Relacionamento deste módulo(projeto.lisp) com a _procura.lisp_ é de modo a poder executar as funções dos algoritmos implementados neste projeto.
+* O Relacionamento deste módulo(projeto.lisp) com o _problemas.dat_ é de modo a obter os tabuleiros de jogo disponibilizados pelos docentes.
+* O Relacionamento deste módulo(projeto.lisp) com o _solucoes.dat_ é de modo a saber quantas caixas são precisas para a solução.
+* O Relacionamento deste módulo(projeto.lisp) com o _log.dat_ é de modo a guardar as estatisticas das soluções realizadas para poder fazer comparações entre as mesmas.
 
 ### **Módulo do Problema - puzzle.lisp**
 
-É o módulo da aplicação onde existe uma .
+É o módulo da aplicação onde existe uma resolução especifica de um problema em relação ao jogo "**Dots and Boxes**".
 
-#### **Têm como Objetivo**
+#### **O Módulo do Problema têm como Objetivo**
 
-Ser utilizado .
+Ser utilizado para resolver o problema especifico ao utilizar funções especificas para gerar e avaliar nós do jogo "**Dots and Boxes**".
 
-#### **Conexões**
+#### **Conexões do Módulo do Problema**
 
-...
+* projeto.lisp
 
-#### **Relacionamento entre as conexões**
+#### **Relacionamento entre as conexões do Módulo do Problema**
 
-...
+*O Relacionamento deste módulo(projeto.lisp) com o _projeto.lisp_ é de modo a disponibilizar as funções especificas do problema do jogo.
 
 ## 2. Entidades e sua implementação
 
@@ -208,10 +216,9 @@ A complexidade algoritmica é de $O(b^d)$, em que **$d$** é a profundidade máx
 
 ## 4. Descrição das opções tomadas
 
-– descrever as opções de implementação que foram tomadas em detrimento de outras, por vezes essas opções podem não ser as mais óbvias e como tal devem ser documentadas
+Não houve grandes decisões a serem tomadas pois concretamente recorremos aos slides para fazer a implementação dos algoritmos e fomos progressivamente implementando funcionalidades devido aos laboratorios disponibilizados na cadeira, por isso nunca chegamos a ter mais do que uma decisãoa tomar.
 
 ## 5. Limitações técnicas e ideias para desenvolvimento futuro
   
-– requisitos não implementados  
-– refactoring que se percebe ser necessário fazer no futuro mas que não houve tempo para fazer  
-– melhoramentos potenciais de desempenho 
+Refactoring de modo a obter um maior nivel de abstração.
+Possiveis melhoramentos no desempenho dos algoritmos de procura.
