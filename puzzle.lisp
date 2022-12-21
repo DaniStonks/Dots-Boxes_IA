@@ -28,6 +28,13 @@
   (cond ((= (1- pos-lista-arcos) 0) (cons (substituir pos-arco (car lista-arcos) x) (cdr lista-arcos)))
         (t (cons (car lista-arcos) (arco-na-posicao (1- pos-lista-arcos) pos-arco (cdr lista-arcos) x)))))
 
+;;Teste: (contar-ocorrencias-elemento (obter-estado-caixas (no-estado (tabuleiro-teste))) 0)
+;;Resultado: 3
+(defun contar-ocorrencias-elemento (lista elemento)
+  (cond ((null lista) 0)
+        ((equal elemento (car lista)) (+ 1 (contar-ocorrencias-elemento (cdr lista) elemento)))
+        (t (contar-ocorrencias-elemento (cdr lista) elemento))))
+
 ;;;;;;;;;;;;;;;;;;
 ;;; Selectores ;;;
 ;;;;;;;;;;;;;;;;;;
@@ -105,16 +112,21 @@
 (defun heuristica-base (estado num-caixas-a-fechar)
   (- num-caixas-a-fechar (contar-caixas-fechadas estado)))
 
-;;segunda heuristica - h(x) = w * (o(x) - c(x)) + (1 - w) * a(x)
+;;segunda heuristica - h(x) = (w * (o(x) - c(x))) - ((1 - w) * a(x)) - ((1 - w) * b(x))
 ;;o(x) - numero de arcos minimos necessarios para resolver o problema
 ;;c(x) - numero de arcos colocados de forma a fazer uma caixa
 ;;a(x) - numero de caixas com apenas 1 lado livre
 ;;w - fator de ponderação
 (defun heuristica-melhorada (estado num-caixas-a-fechar)
-  (+ (* (- num-caixas-a-fechar (contar-caixas-fechadas estado)) 0.67) (* (contar-caixas-perto-fechar estado) 0.33)))
+  (let ((estado-caixas (obter-estado-caixas estado)))
+    (- (- num-caixas-a-fechar (contar-ocorrencias-elemento estado-caixas 4)) (contar-ocorrencias-elemento estado-caixas 3) (contar-ocorrencias-elemento estado-caixas 2))))
+
+(defun heuristica-melhorada2 (estado num-caixas-a-fechar &optional (peso 0.8))
+  (let ((estado-caixas (obter-estado-caixas estado)))
+    (- (* (- num-caixas-a-fechar (contar-ocorrencias-elemento estado-caixas 4)) peso) (* (contar-ocorrencias-elemento estado-caixas 3) (- 1.2 peso)) (* (contar-ocorrencias-elemento estado-caixas 2) (- 1 peso)))))
 
 ;;Teste: (contar-caixas-fechadas (no-estado (tabuleiro-teste)))
-;;Resultado: 1
+;;Resultado: (0 0 1 1 2 3 0 2 4), isto significa que existem 3 caixas sem lados preenchidos, 2 com 1 lado, 2 com 2 lados, 1 com 3 lados e 1 fechada.
 (defun contar-caixas-fechadas (estado &optional (l 1) (i 1))
   (let* ((arcos-hor (get-arcos-horizontais estado))
          (arcos-vert (get-arcos-verticais estado))
@@ -128,13 +140,6 @@
                                 ((= i num-total-indices-hor) (iterar-tabuleiro (1+ l) 1))
                                 (t (iterar-tabuleiro l (1+ i)))))))))
       (iterar-tabuleiro l i))))
-
-;;Teste: (caixa-fechadap (get-arcos-horizontais (no-estado (tabuleiro-teste))) (get-arcos-verticais (no-estado(tabuleiro-teste))) 3 3)
-;;Resultado: T
-(defun caixa-fechadap(arcos-hor arcos-vert l i)
-  (cond ((and (= 1 (get-arco-na-posicao l i arcos-hor))(= 1 (get-arco-na-posicao (1+ l) i arcos-hor))
-              (= 1 (get-arco-na-posicao i l arcos-vert))(= 1 (get-arco-na-posicao (1+ i) l arcos-vert))) T)
-        (t NIL)))
 
 ;;Teste: (contar-caixas-perto-fechar (no-estado (tabuleiro-teste)))
 ;;Resultado: 1
@@ -150,6 +155,20 @@
                                 ((= caixa 3) (+ 1 (iterar-tabuleiro l (1+ i))))
                                 ((= i num-total-indices-hor) (iterar-tabuleiro (1+ l) 1))
                                 (t (iterar-tabuleiro l (1+ i)))))))))
+      (iterar-tabuleiro l i))))
+
+;;Teste: (obter-estado-caixas (no-estado (tabuleiro-teste)))
+;;Resultado: 1
+(defun obter-estado-caixas (estado &optional (l 1) (i 1))
+  (let* ((arcos-hor (get-arcos-horizontais estado))
+         (arcos-vert (get-arcos-verticais estado))
+         (num-total-arcos-hor (1- (length arcos-hor)))
+         (num-total-indices-hor (length (car arcos-hor))))
+    (labels ((iterar-tabuleiro (l i)
+               (cond ((> l num-total-arcos-hor) NIL)
+                     (t (let ((caixa (estado-caixa arcos-hor arcos-vert l i)))
+                          (cond ((= i num-total-indices-hor) (cons caixa (iterar-tabuleiro (1+ l) 1)))
+                                (t (cons caixa (iterar-tabuleiro l (1+ i))))))))))
       (iterar-tabuleiro l i))))
 
 ;;Teste: (caixa-fechadap (get-arcos-horizontais (no-estado (tabuleiro-teste))) (get-arcos-verticais (no-estado(tabuleiro-teste))) 3 3)
