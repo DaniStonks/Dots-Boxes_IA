@@ -2,9 +2,6 @@
 ;;;; Funcoes de interacao com o utilizador e de escrita e leitura de ficheiros
 ;;;; Autor: Daniel Baptista, Rafael Silva
 
-(load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\puzzle.lisp")
-(load "C:\\Users\\Daniel\\Desktop\\Coisas do ips\\3ºAno\\1ºSemestre\\IA\\Proj\\Dots-Boxes_IA\\procura.lisp")
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Inicializacao do programa ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
