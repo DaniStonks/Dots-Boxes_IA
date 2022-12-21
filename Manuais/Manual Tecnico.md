@@ -37,10 +37,12 @@ Ser utilizado como biblioteca generica onde estão presentes os três algoritmos
 #### **Conexões do Módulo de Procura**
 
 * projeto.lisp;
+* puzzle.lisp;
 
 #### **Relacionamento entre as conexões do Módulo de Procura**
 
 * Relacionamento deste módulo(procura.lisp) com o projeto.lisp é de modo a poder se utilizar os algoritmos de pesquisa em espaço de estados.
+* Relacionamento deste módulo(procura.lisp) com o puzzle.lisp é de modo a poder buscar funções especificas.
 
 ### **Módulo da Interface com utilizador - projeto.lisp**
 
@@ -84,8 +86,11 @@ Ser utilizado para resolver o problema especifico ao utilizar funções especifi
 
 ## 2. Entidades e sua implementação
 
-– poderá recorrer-se à identificação e descrição de tipos abstratos de dados, objetos, ou usar outras formas de explicação  
-– convém fazer um paralelo entre as entidades do domínio de aplicação e as entidades programáticas, sem as confundir
+* **_no_** - entidade que representa o ponto do tabuleiro de jogo.
+* **_no-estado_** - entidade que representa o estado em que se encontra o ponto do tabuleiro de jogo.
+* **_sucessores_** - entidade que representa todos os sucessores de um nó atual.
+* **_abertos_** - entidade que representa a lista dos nós que podem ser expandidos.
+* **_fechados_** - entidade que representa a lista dos nós que já foram percorridos e que tem sucessores.
 
 ## 3. Algoritmos e sua implementação
 
