@@ -61,13 +61,15 @@ Para utilizar o programa é necessária realizar os seguintes passos:
 
 **3.** De seguida abrir o ficheiro projeto.lisp no LispWorks através do atalho no canto superior esquerdo "Open file" com o icon seguinte <img src="Open_file_icon.jpg" width="20" height="20">
 
-**4.** Depois executar a função iniciar no listener do LispWorks desta forma: ```(iniciar)```
+**4.** Com o botão direito do rato na janela do Editor, selecionar a opção "Buffer" e de seguida a opção "Evaluate".
 
-**5.** Escolher a diretoria onde estão os ficheiros da aplicação. Exemplo: ```"C:\Users\username\Docs\Dots-Boxes_IA"```
+**5.** Depois executar a função iniciar no listener do LispWorks desta forma: ```(iniciar)```
 
-**6.** Selecionar um dos problemas que pretende resolver.
+**6.** Escolher a diretoria onde estão os ficheiros da aplicação. Exemplo: ```"C:\Users\username\Docs\Dots-Boxes_IA"```
 
-**7.** Escolher com que algoritmo quer resolver o problema escolhido.
+**7.** Selecionar um dos problemas que pretende resolver.
+
+**8.** Escolher com que algoritmo quer resolver o problema escolhido.
 
 ## 4. Input/Output  
 
@@ -82,8 +84,8 @@ Para utilizar o programa é necessária realizar os seguintes passos:
   * **A*** - Algoritmo A* em que o que é feito é utilizar métodos heurísticos em que se avalia os custos dos nós de modo a encontrar os melhores caminhos para a solução final, visto isto este algoritmo consegue sempre encontrar a solução ótima e será o mais eficiente dos outros dois acima falados.
 * **Profundidade limite** - É o limite verticalmente até onde o algoritmo **DFS** irá fazer a procura dos nós, ou seja, é o nivel de profundidade até onde se quer que o algoritmo **DFS** pesquise por uma solução.
 * **Heuristica a usar** - É a escolha do método heurístico que o algoritmo **A*** irá usar para chegar a solução final do problema, em que pode-se optar por estes dois:
-  * **Número de caixas fechadas** - 
-  * **Numero de caixas fechadas e numero de caixas perto de fechar** - 
+  * **Número de caixas fechadas** - Esta heurística apenas se foca em comparar o número de caixas fechadas no estado atual com o número de caixas necessárias para acabar o problema.
+  * **Numero de caixas fechadas e numero de caixas perto de fechar** - Esta heurística é mais eficiente, pois para além de ter a heurística anterior como base, também verifica as caixas com 3 lados fechados e com 2 lados.
 
 ### **Output**
 
