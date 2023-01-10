@@ -7,6 +7,7 @@
 ;;;;
 (defvar *jogador2* -1)
 (defvar *jogador1* 1)
+(defvar *jogada* NIL)
 
 
 ;;;;
@@ -74,7 +75,6 @@
   (substituir-posicao linha tabuleiro (substituir-posicao coluna (linha linha tabuleiro) valor))
 )
 
-
 ;;;; 
 ;;;; Entrada / saida de dados
 ;;;;
@@ -82,38 +82,43 @@
 ;;; Funcoes para imprimir um tabuleiro
 ;;; ----------------------------------
 (defun imprime-tabuleiro (tabuleiro)
-  (let ((numLinhas (length tabuleiro)))
+  (let ((numLinhas (1- (length tabuleiro))))
     (labels ((imprimir-tabuleiro (l)
-               (cond ((< l 0) (format t "~%"))
+               (cond ((> l numLinhas) (format t "~%"))
                      ((progn 
                        (format t "~A ~%" (linha l tabuleiro))
-                       (imprimir-tabuleiro (1- l)))))))
-      (imprimir-tabuleiro (1- numLinhas)))))
+                       (imprimir-tabuleiro (1+ l)))))))
+      (imprimir-tabuleiro 0))))
 
 ;;;;
 ;;;; Funcoes para o jogo
 ;;; ----------------------------------
 (defun tabuleiro-preenchidop (tabuleiro)
-  (let* ((numLinhas (length tabuleiro))
-         (numColunas (length (car tabuleiro))))
+  (let* ((numLinhas (1- (length tabuleiro)))
+         (numColunas (1- (length (car tabuleiro)))))
     (labels ((ver-tabuleiro (l c)
-               (cond ((> l num-total-arcos-hor) T)
+               (cond ((> l numLinhas) T)
                      (t (let ((valor-pos (celula l c tabuleiro)))
-                          (cond ((= valor-pos 0) F)
-                                ((= i numColunas) (iterar-tabuleiro (1+ l) 0))
-                                (t (iterar-tabuleiro l (1+ i)))))))))
-      (ver-tabuleiro (0 0))))
+                          (cond ((= valor-pos 0) NIL)
+                                ((= c numColunas) (ver-tabuleiro (1+ l) 0))
+                                (t (ver-tabuleiro l (1+ c)))))))))
+      (ver-tabuleiro 0 0))))
 
 (defun tabuleiro-solucao (tabuleiro)
-  (let* ((numLinhas (length tabuleiro))
-         (numColunas (length (car tabuleiro))))
-    (labels ((ver-tabuleiro (l c)
-               (cond ((> l num-total-arcos-hor) T)
-                     (t (let ((valor-pos (celula l c tabuleiro)))
-                          (cond ((= valor-pos 0) F)
-                                ((= i numColunas) (iterar-tabuleiro (1+ l) 0))
-                                (t (iterar-tabuleiro l (1+ i)))))))))
-      (ver-tabuleiro (0 0))))
+  (let* ((dimensao (1- (length tabuleiro))))
+    (labels ((ver-tabuleiro (l)
+               (cond ((> l dimensao) tabuleiro)
+                     (t (let ((valor-linha (linha l tabuleiro))
+                              (valor-coluna (coluna l tabuleiro))
+                              (valor-diagonal (diagonal l tabuleiro)))
+                          (cond ((= (apply '+ valor-linha) 3) "Jogador 1")
+                                ((= (apply '+ valor-linha) -3) "Jogador 2")
+                                ((= (apply '+ valor-coluna) 3) "Jogador 1")
+                                ((= (apply '+ valor-coluna) -3) "Jogador 2")
+                                ((= (apply '+ valor-diagonal) 3) "Jogador 1")
+                                ((= (apply '+ valor-diagonal) -3) "Jogador 2")
+                                (t (ver-tabuleiro (1+ l)))))))))
+      (ver-tabuleiro 0))))
 
 ;;;;
 ;;;; Funcoes de jogo (humano e computador c/minimax)
@@ -125,10 +130,12 @@
 )
 
 (defun jogar-humano (tabuleiro jogador)
-  (let ((vencedor (tabuleiro-solucao (jogada-humano tabuleiro jogador))))
-    (cond (vencedor vencedor)
-          ((tabuleiro-preenchidop) (format t "Empate"))
-          (jogar-humano tabuleiro (trocar-peca jogador)))))
+  (progn 
+    (imprime-tabuleiro tabuleiro)
+    (let ((vencedor (tabuleiro-solucao (jogada-humano tabuleiro jogador))))
+      (cond ((stringp vencedor) vencedor)
+            ((tabuleiro-preenchidop vencedor) (format t "Empate"))
+            (t (jogar-humano vencedor (trocar-peca jogador)))))))
          
 (defun jogada-humano (tabuleiro jogador)
   (let ((linha (progn
@@ -137,5 +144,25 @@
         (coluna (progn
                  (format t "Qual a coluna onde colocar a peça? ~%")
                  (read))))
-    (colocar-peca (linha coluna tabuleiro jogador))))
+    (colocar-peca linha coluna tabuleiro jogador)))
+
+(defun jogar-computador (tabuleiro jogador)
+  (progn 
+    (imprime-tabuleiro tabuleiro)
+    (let ((vencedor (tabuleiro-solucao (jogada-humano tabuleiro jogador))))
+      (cond ((stringp vencedor) vencedor)
+            ((tabuleiro-preenchidop vencedor) (format t "Empate"))
+            (t (jogar-computador vencedor (trocar-peca jogador)))))))
+
+(defun jogada-computador (tabuleiro jogador)
+  (let ((linha (progn
+                 (format t "Qual a linha onde colocar a peça? ~%")
+                 (read)))
+        (coluna (progn
+                 (format t "Qual a coluna onde colocar a peça? ~%")
+                 (read))))
+    (colocar-peca linha coluna tabuleiro jogador)))
+
+(defun minimax (no prof peca)
+  )
 
