@@ -120,6 +120,9 @@
                                 (t (ver-tabuleiro (1+ l)))))))))
       (ver-tabuleiro 0))))
 
+(defun heuristica (tabuleiro jogador)
+  (cond ((and (tabuleiro-solucao tabuleiro) (= jogador 1)) 100)
+        
 ;;;;
 ;;;; Funcoes de jogo (humano e computador c/minimax)
 ;;;;
@@ -163,6 +166,7 @@
                  (read))))
     (colocar-peca linha coluna tabuleiro jogador)))
 
-(defun minimax (no prof peca)
-  )
+(defun minimax (no profundidade peca)
+  (cond ((= 0 profundidade) (heuristica no))
+        
 

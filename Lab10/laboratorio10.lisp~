@@ -7,6 +7,7 @@
 ;;;;
 (defvar *jogador2* -1)
 (defvar *jogador1* 1)
+(defvar *jogada* NIL)
 
 
 ;;;;
@@ -81,20 +82,20 @@
 ;;; Funcoes para imprimir um tabuleiro
 ;;; ----------------------------------
 (defun imprime-tabuleiro (tabuleiro)
-  (let ((numLinhas (length tabuleiro)))
+  (let ((numLinhas (1- (length tabuleiro))))
     (labels ((imprimir-tabuleiro (l)
-               (cond ((< l 0) (format t "~%"))
+               (cond ((> l numLinhas) (format t "~%"))
                      ((progn 
                        (format t "~A ~%" (linha l tabuleiro))
-                       (imprimir-tabuleiro (1- l)))))))
-      (imprimir-tabuleiro (1- numLinhas)))))
+                       (imprimir-tabuleiro (1+ l)))))))
+      (imprimir-tabuleiro 0))))
 
 ;;;;
 ;;;; Funcoes para o jogo
 ;;; ----------------------------------
 (defun tabuleiro-preenchidop (tabuleiro)
-  (let* ((numLinhas (length tabuleiro))
-         (numColunas (length (car tabuleiro))))
+  (let* ((numLinhas (1- (length tabuleiro)))
+         (numColunas (1- (length (car tabuleiro)))))
     (labels ((ver-tabuleiro (l c)
                (cond ((> l numLinhas) T)
                      (t (let ((valor-pos (celula l c tabuleiro)))
@@ -144,4 +145,24 @@
                  (format t "Qual a coluna onde colocar a peça? ~%")
                  (read))))
     (colocar-peca linha coluna tabuleiro jogador)))
+
+(defun jogar-computador (tabuleiro jogador)
+  (progn 
+    (imprime-tabuleiro tabuleiro)
+    (let ((vencedor (tabuleiro-solucao (jogada-humano tabuleiro jogador))))
+      (cond ((stringp vencedor) vencedor)
+            ((tabuleiro-preenchidop vencedor) (format t "Empate"))
+            (t (jogar-computador vencedor (trocar-peca jogador)))))))
+
+(defun jogada-computador (tabuleiro jogador)
+  (let ((linha (progn
+                 (format t "Qual a linha onde colocar a peça? ~%")
+                 (read)))
+        (coluna (progn
+                 (format t "Qual a coluna onde colocar a peça? ~%")
+                 (read))))
+    (colocar-peca linha coluna tabuleiro jogador)))
+
+(defun minimax (no prof peca)
+  )
 
