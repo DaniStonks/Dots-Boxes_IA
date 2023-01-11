@@ -4,24 +4,17 @@
 
 
 ;;; Tabuleiro
-  "Cria um não do problema com um tabuleiro e opcionalmente profundidade, valor heuristico e nÃ³ pai"
+  "Cria um nÃ³ do problema com um tabuleiro e opcionalmente profundidade, valor heuristico e nÃ³ pai"
 (defun cria-no (tabuleiro &optional (g 0) (h 0) (pai nil))
   (list tabuleiro g h pai)
 )
 
-(defun tabuleiro-inicial ()
-  "Retorna um tabuleiro 5x6 (5 caixas na vertical por 6 caixas na horizontal)"
-  '((
-    ((0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0))
-    ((0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))
-    ) (0 0)))
-
 (defun tabuleiro-teste ()
-  "Retorna um tabuleiro 5x6 (5 caixas na vertical por 6 caixas na horizontal)"
+  "Retorna um tabuleiro 3x3 (3 arcos na vertical por 3 arcos na horizontal)"
   '((
-    ((0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0))
-    ((0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))
-    ) (0 0)))
+    ((0 0 0) (0 0 1) (0 1 1) (0 0 1))
+    ((0 0 0) (0 1 0) (0 0 1) (0 1 1))
+    ) 0 0 NIL))
 
 ;;Funcoes Auxiliares
 (defun substituir (indice lista &optional (x 1))
@@ -42,23 +35,6 @@
         ((equal elemento (car lista)) (+ 1 (contar-ocorrencias-elemento (cdr lista) elemento)))
         (t (contar-ocorrencias-elemento (cdr lista) elemento))))
 
-;;Teste:(tabuleiro-preenchidop (no-estado (tabuleiro-teste)))
-;;Resultado: NIL
-(defun tabuleiro-preenchidop (estado)
-  (let* ((arcos-hor (get-arcos-horizontais estado))
-         (arcos-vert (get-arcos-verticais estado))
-         (num-arcos-hor (length arcos-hor))
-         (num-arcos-vert (length arcos-vert))
-         (indice-a-usar (max num-arcos-hor num-arcos-vert)))
-    (labels ((ver-tabuleiro (l c)
-               (cond ((> l indice-a-usar) T)
-                     (t (let ((valor-arco-hor (get-arco-na-posicao l c arcos-hor))
-                              (valor-arco-vert (get-arco-na-posicao l c arcos-vert)))
-                          (cond ((or (eq valor-arco-hor 0)(eq valor-arco-vert 0)) NIL)
-                                ((= c indice-a-usar) (ver-tabuleiro (1+ l) 1))
-                                (t (ver-tabuleiro l (1+ c)))))))))
-      (ver-tabuleiro 1 1))))
-
 ;;;;;;;;;;;;;;;;;;
 ;;; Selectores ;;;
 ;;;;;;;;;;;;;;;;;;
@@ -76,6 +52,24 @@
 (defun get-arco-na-posicao (pos-lista-arcos pos-arco arcos)
   "Retorna o arco numa posicao passada por argumento de uma lista de arcos horizontais ou verticais"
   (nth (1- pos-arco) (nth (1- pos-lista-arcos) arcos)))
+
+(defun no-profundidade (no)
+  (second no))
+
+(defun no-heuristica (no)
+  (third no))
+
+(defun no-pai (no)
+  (fourth no))
+
+(defun no-custo (no)
+  (+ (third no) (second no)))
+
+(defun estado-no-inicial(no-solucao)
+  "Permite saber o estado inicial de um nó"
+  (cond ((null (no-pai no-solucao)) (no-estado no-solucao))
+        (t (estado-no-inicial (no-pai no-solucao))))
+)
 
 ;;;;;;;;;;;;;;;;;;
 ;;; Operadores ;;;
@@ -187,18 +181,21 @@
 ;;;;;;;;;;;;;;;;;;
 ;;; Sucessores ;;;
 ;;;;;;;;;;;;;;;;;;
-(defun novo-sucessor (no l i operador)
-  (let* ((novo-estado (funcall operador l i (no-estado no) 2))
-        (novas-caixas '(1 1)))
-    (list novo-estado novas-caixas)))
+(defun novo-sucessor (no l i operador &optional (heuristica nil) (num-solucao 0))
+  (let* ((novo-estado (funcall operador l i (no-estado no) 1))
+        (nova-profundidade (1+ (second no)))
+        (valor-heuristica (cond ((or(null heuristica)(null novo-estado)) 0)
+                                (t (funcall heuristica novo-estado num-solucao)))))
+    (list novo-estado nova-profundidade valor-heuristica no)))
 
-(defun sucessores (no operadores jogador)
-  (let* ((arcos-hor (get-arcos-horizontais (no-estado no)))
-         (arcos-vert (get-arcos-verticais (no-estado no)))
-         (l-maximo (max (length arcos-hor) (length arcos-vert)))
-         (i-maximo (max (length (car arcos-hor)) (length (car arcos-vert)))))
-    (labels ((iterar-tabuleiro (l i)
-               (cond ((> l l-maximo) NIL)
-                     ((> i i-maximo) (iterar-tabuleiro (1+ l) 1))
-                     (t (append (mapcar (lambda (op) (novo-sucessor no l i op)) operadores) (iterar-tabuleiro l (1+ i)))))))
-      (iterar-tabuleiro 1 1))))
+(defun sucessores (no operadores algoritmo &optional (heuristica nil) (num-solucao 0) profundidade)
+  (cond ((and (eq algoritmo 'dfs) (= (second no) profundidade)) NIL)
+        (t (let* ((arcos-hor (get-arcos-horizontais (no-estado no)))
+                  (arcos-vert (get-arcos-verticais (no-estado no)))
+                  (l-maximo (max (length arcos-hor) (length arcos-vert)))
+                  (i-maximo (max (length (car arcos-hor)) (length (car arcos-vert)))))
+             (labels ((iterar-tabuleiro (l i)
+                        (cond ((> l l-maximo) NIL)
+                              ((> i i-maximo) (iterar-tabuleiro (1+ l) 1))
+                              (t (append (mapcar (lambda (op) (novo-sucessor no l i op heuristica num-solucao)) operadores) (iterar-tabuleiro l (1+ i)))))))
+               (iterar-tabuleiro 1 1))))))

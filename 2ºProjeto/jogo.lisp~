@@ -7,19 +7,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun iniciar ()
   "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial, do algoritmo, a heuristica e a profundidade se utilizadas"
-  (let* ((carregamentoFicheiros (carregar-ficheiros (ler-diretoria)))
-         (tabuleiro (tabuleiro-inicial))
-         (tempo-execucao-inicial (get-internal-real-time))
-         (no-solucao (cond
-                      ((equal algoritmo 'bfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) num-solucao *abertos* *fechados*))
-                      ((equal algoritmo 'dfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) profundidade num-solucao *abertos* *fechados*))
-                      ((equal algoritmo 'a*) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) heuristica num-solucao *abertos* *fechados*))))
-         (tempo-execucao (obter-tempo-execucao-em-segundos tempo-execucao-inicial (get-internal-real-time))))
-    (mostrar-solucao no-solucao tempo-execucao)
-    (escrever-no-log no-solucao algoritmo heuristica tempo-execucao diretoria)))
-
-(defun jogar (estado &optional (tempo 0))
-  "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial, do algoritmo, a heuristica e a profundidade se utilizadas"
+  (setf *abertos* nil)
+  (setf *fechados* nil)
   (let* ((diretoria (ler-diretoria))
          (ignorar (carregar-ficheiros diretoria))
          (problema (ler-problema diretoria))
@@ -40,7 +29,7 @@
 (defun carregar-ficheiros (diretoria)
   (progn
     (load (concatenate 'string diretoria "\\puzzle.lisp"))
-    (load (concatenate 'string diretoria "\\algoritmo.lisp"))))
+    (load (concatenate 'string diretoria "\\procura.lisp"))))
 
 ;;;;;;;;;;;;;
 ;; Leitura ;;
