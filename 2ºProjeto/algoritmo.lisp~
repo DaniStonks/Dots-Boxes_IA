@@ -33,21 +33,10 @@
                                     (t no))))
                           lista-nos)))
 
-;;;Funcoes auxiliares dos metodos de procura
-(defun abertos-bfs (abertos fechados sucessores)
-  (append abertos (lista-elementos-diferentes sucessores (append fechados abertos))))
-
 (defun abertos-dfs (abertos fechados sucessores)
   (let* ((novos-fechados (filtrar-nos fechados sucessores 'no-profundidade))
          (sucessores-novos (lista-elementos-diferentes sucessores (append novos-fechados abertos)))) 
     (list (append sucessores-novos abertos) novos-fechados)))
-
-(defun abertos-e-fechados-a* (abertos fechados sucessores)
-  "Esta funcao irá devolver uma lista com duas entradas, a primeira é pertencente aos novos nós abertos, depois de serem comparados com os nós sucessores. A segunda entrada é para os novos nós fechados, após tambem serem comparados com os nós sucessores"
-  (let* ((novos-fechados (filtrar-nos fechados sucessores 'no-custo))
-         (novos-abertos (filtrar-nos abertos sucessores 'no-custo))
-         (sucessores-a-adicionar (lista-elementos-diferentes sucessores (append novos-fechados novos-abertos))))
-    (list (ordenar-nos (append sucessores-a-adicionar novos-abertos)) novos-fechados)))
 
 (defun lista-elementos-diferentes (lista-a-filtrar lista-a-verificar)
 "Esta funcao irá devolver uma lista com os elementos diferentes da primeira lista em comparacao com a segunda lista"
@@ -60,23 +49,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Metodos de procura ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;procura na largura
-(defun bfs (no f-objetivo f-sucessores operadores &optional num-solucao abertos fechados)
-  (let* ((novos-fechados (cons no fechados))
-        (novos-abertos (abertos-bfs abertos novos-fechados (funcall f-sucessores no operadores 'bfs nil)))
-        (no-solucao (remove nil (mapcar (lambda (no)
-                                              (cond((funcall f-objetivo no num-solucao) no)
-                                                   (t NIL)))
-                                            novos-abertos))))
-    (setf *abertos* novos-abertos)
-    (setf *fechados* novos-fechados)
-    (cond ((null novos-abertos) NIL)
-          ((funcall f-objetivo no num-solucao) no)
-          ((not (null no-solucao)) (cond ((/= (length no-solucao) 1) (car no-solucao))
-                                         (t (car no-solucao))))
-          (t (bfs (car *abertos*) f-objetivo f-sucessores operadores num-solucao (cdr *abertos*) *fechados*)))))
-
 ;; procura na profundidade
 (defun dfs (no f-objetivo f-sucessores operadores profundidade &optional num-solucao abertos fechados)
   (let* ((novos-sucessores-e-fechados (abertos-dfs abertos (cons no fechados) (funcall f-sucessores no operadores 'dfs nil 0 profundidade)))
@@ -94,16 +66,13 @@
                                          (t (car no-solucao))))
           (t (dfs (car *abertos*) f-objetivo f-sucessores operadores profundidade num-solucao (cdr *abertos*) *fechados*)))))
 
-;;procura informada
-(defun a* (no f-solucao f-sucessores operadores f-heuristica &optional num-solucao abertos fechados)
-  (let* ((novos-abertos-fechados (abertos-e-fechados-a* abertos (cons no fechados) (funcall f-sucessores no operadores 'a* f-heuristica num-solucao)))
-         (novos-abertos (car novos-abertos-fechados))
-         (novos-fechados (car (cdr novos-abertos-fechados)))
-         (no-solucao (cond((funcall f-solucao (car novos-abertos) num-solucao) (car novos-abertos))
-                          (t NIL))))
-    (setf *abertos* novos-abertos)
-    (setf *fechados* novos-fechados)
-    (cond ((null novos-abertos) NIL)
-          ((funcall f-solucao no num-solucao) no)
-          ((not (null no-solucao)) no-solucao)
-          (t (a* (car *abertos*) f-solucao f-sucessores operadores f-heuristica num-solucao (cdr *abertos*) *fechados*)))))
+;(max val (minimax 
+(defun minimax (no operadores profundidade peca-max)
+  (cond ((= 0 profundidade) (heuristica no))
+        (t (let ((nos-filhos (sucessores no operadores)))
+             (cond (peca-max (mapcar (lambda (filho)
+                                         (max v (minimax filho operadores (1- profundidade) NIL)))
+                                       nos-filhos))
+                   (t (mapcar (lambda (filho)
+                                         (min v (minimax filho operadores (1- profundidade) T)))
+                                       nos-filhos)))))))

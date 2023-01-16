@@ -53,7 +53,7 @@
       (read-line)
       ))
 
-(defun ler-algoritmo ()
+(defun ler-tempo ()
 "Permite fazer a leitura do algoritmo a utilizar."
   (progn
     (format t "Que algoritmo quer usar para procurar? ~%")
@@ -89,24 +89,6 @@
   (let ((linha-lida (read ficheiro nil)))
     (cond ((= linha-a-ler linha) linha-lida)
           (t (ler-ficheiro linha-a-ler ficheiro (1+ linha))))))
-
-(defun ler-problema (diretoria)
-  (let ((num-problema (progn
-                        (format t "Qual o problema a resolver? ~%~%")
-                        (format t "1 - Tabuleiro 3x3 (Objetivo: 3 caixas)~%")
-                        (format t "2 - Tabuleiro 4x4 (Objetivo: 7 caixas)~%")
-                        (format t "3 - Tabuleiro 4x4 (Objetivo: 10 caixas)~%")
-                        (format t "4 - Tabuleiro 5x4 (Objetivo: 10 caixas)~%")
-                        (format t "5 - Tabuleiro 6x6 (Objetivo: 20 caixas)~%")
-                        (format t "6 - Tabuleiro 7x7 (Objetivo: 35 caixas)~%")
-                        (read))))
-    (with-open-file (file (concatenate 'string diretoria "\\Problemas\\problemas.dat") :direction :input)
-      (list (ler-ficheiro num-problema file) (ler-solucao num-problema diretoria)))))
-
-(defun ler-solucao (num-problema diretoria)
-  (with-open-file (file (concatenate 'string diretoria "\\Problemas\\solucoes.dat") :direction :input)
-      (ler-ficheiro num-problema file)))
-
 
 ;;;;;;;;;;;;;
 ;; Escrita ;;

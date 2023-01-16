@@ -19,8 +19,8 @@
 (defun tabuleiro-teste ()
   "Retorna um tabuleiro 5x6 (5 caixas na vertical por 6 caixas na horizontal)"
   '((
-    ((0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0))
-    ((0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))
+    ((1 0 0 0 0 0) (1 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0))
+    ((1 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))
     ) (0 0)))
 
 ;;Funcoes Auxiliares
@@ -65,6 +65,9 @@
 (defun no-estado (no)
   (first no))
 
+(defun no-caixas (no)
+  (second no))
+
 (defun get-arcos-horizontais (tabuleiro-estado)
   "Retorna os arcos horizontais de um tabuleiro"
   (first tabuleiro-estado))
@@ -102,12 +105,6 @@
           ((= 1 (get-arco-na-posicao pos-lista-arcos pos-arco arcos-ver)) NIL)
           (t (cons (car tabuleiro-estado) (cons (arco-na-posicao pos-lista-arcos pos-arco arcos-ver x) nil))))))
 
-(defun no-solucaop (no num-caixas-solucao)
-  (let ((num-caixas-fechadas (contar-caixas-fechadas (no-estado no))))
-    (cond ((= num-caixas-solucao num-caixas-fechadas) T)
-          (t NIL))))
-
-
 ;;;;;;;;;;;;;;;;;;;
 ;;; Heuristicas ;;;
 ;;;;;;;;;;;;;;;;:;;
@@ -129,8 +126,8 @@
     (- (* (- num-caixas-a-fechar (contar-ocorrencias-elemento estado-caixas 4)) 10) (* (contar-ocorrencias-elemento estado-caixas 3) 6) (* (contar-ocorrencias-elemento estado-caixas 2) 3))))
 
 ;;Teste: (contar-caixas-fechadas (no-estado (tabuleiro-teste)))
-;;Resultado: (0 0 1 1 2 3 0 2 4), isto significa que existem 3 caixas sem lados preenchidos, 2 com 1 lado, 2 com 2 lados, 1 com 3 lados e 1 fechada.
-(defun contar-caixas-fechadas (estado &optional (l 1) (i 1))
+;;Resultado: 1
+(defun contar-caixas-fechadas1 (estado &optional (l 1) (i 1))
   (let* ((arcos-hor (get-arcos-horizontais estado))
          (arcos-vert (get-arcos-verticais estado))
          (num-total-arcos-hor (1- (length arcos-hor)))
@@ -140,6 +137,20 @@
                      (t (let ((caixa (estado-caixa arcos-hor arcos-vert l i)))
                           (cond ((and (= caixa 4) (= i num-total-indices-hor)) (+ 1 (iterar-tabuleiro (1+ l) 1)))
                                 ((= caixa 4) (+ 1 (iterar-tabuleiro l (1+ i))))
+                                ((= i num-total-indices-hor) (iterar-tabuleiro (1+ l) 1))
+                                (t (iterar-tabuleiro l (1+ i)))))))))
+      (iterar-tabuleiro l i))))
+
+(defun contar-caixas-fechadas (estado &optional (l 1) (i 1))
+  (let* ((arcos-hor (get-arcos-horizontais estado))
+         (arcos-vert (get-arcos-verticais estado))
+         (num-total-arcos-hor (1- (length arcos-hor)))
+         (num-total-indices-hor (length (car arcos-hor))))
+    (labels ((iterar-tabuleiro (l i)
+               (cond ((> l num-total-arcos-hor) 0)
+                     (t (let ((caixa (caixa-fechadap arcos-hor arcos-vert l i)))
+                          (cond ((and caixa (= i num-total-indices-hor)) (+ 1 (iterar-tabuleiro (1+ l) 1)))
+                                (caixa (+ 1 (iterar-tabuleiro l (1+ i))))
                                 ((= i num-total-indices-hor) (iterar-tabuleiro (1+ l) 1))
                                 (t (iterar-tabuleiro l (1+ i)))))))))
       (iterar-tabuleiro l i))))
@@ -161,7 +172,7 @@
       (iterar-tabuleiro l i))))
 
 ;;Teste: (obter-estado-caixas (no-estado (tabuleiro-teste)))
-;;Resultado: 1
+;;Resultado: (0 0 1 1 2 3 0 2 4), isto significa que existem 3 caixas sem lados preenchidos, 2 com 1 lado, 2 com 2 lados, 1 com 3 lados e 1 fechada.
 (defun obter-estado-caixas (estado &optional (l 1) (i 1))
   (let* ((arcos-hor (get-arcos-horizontais estado))
          (arcos-vert (get-arcos-verticais estado))
@@ -184,15 +195,24 @@
     (cond ((and (null lado-1) (null lado-2) (null lado-3) (null lado-4)) 0)
           (t (+ lado-1 lado-2 lado-3 lado-4)))))
 
+(defun caixa-fechadap(arcos-hor arcos-vert l i)
+  (let ((lado-1 (get-arco-na-posicao l i arcos-hor))
+        (lado-2 (get-arco-na-posicao (1+ l) i arcos-hor))
+        (lado-3 (get-arco-na-posicao i l arcos-vert))
+        (lado-4 (get-arco-na-posicao (1+ i) l arcos-vert)))
+    (cond ((or (eq lado-1 0) (eq lado-2 0) (eq lado-3 0) (eq lado-4 0)) NIL)
+          (t T))))
+
 ;;;;;;;;;;;;;;;;;;
 ;;; Sucessores ;;;
 ;;;;;;;;;;;;;;;;;;
 (defun novo-sucessor (no l i operador)
   (let* ((novo-estado (funcall operador l i (no-estado no) 2))
-        (novas-caixas '(1 1)))
-    (list novo-estado novas-caixas)))
+        (caixas-jogador-1 (first (no-caixas no)))
+        (caixas-jogador-2 (contar-caixas-fechadas novo-estado)))
+    (list novo-estado (list caixas-jogador-1 caixas-jogador-2))))
 
-(defun sucessores (no operadores jogador)
+(defun sucessores (no operadores)
   (let* ((arcos-hor (get-arcos-horizontais (no-estado no)))
          (arcos-vert (get-arcos-verticais (no-estado no)))
          (l-maximo (max (length arcos-hor) (length arcos-vert)))
