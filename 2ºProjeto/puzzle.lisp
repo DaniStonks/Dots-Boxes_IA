@@ -125,8 +125,17 @@
   (let ((estado-caixas (obter-estado-caixas estado)))
     (- (* (- num-caixas-a-fechar (contar-ocorrencias-elemento estado-caixas 4)) 10) (* (contar-ocorrencias-elemento estado-caixas 3) 6) (* (contar-ocorrencias-elemento estado-caixas 2) 3))))
 
+(defun avaliacao (estado)
+  (let ((caixas (obter-estado-caixas estado)))
+    (+ (* 5 (contar-ocorrencias-elemento caixas 3)) (* -5 (contar-ocorrencias-elemento caixas 2)) (* 10 (second (no-caixas estado))) (* -10 (first (no-caixas estado))))))
+
+(defun vencedor (caixas)
+  (cond ((> (first caixas) (second caixas)) "Jogador 1")
+        (t "Jogador 2")))
+
 ;;Teste: (contar-caixas-fechadas (no-estado (tabuleiro-teste)))
 ;;Resultado: 1
+;Usando lista com lados preenchidos
 (defun contar-caixas-fechadas1 (estado &optional (l 1) (i 1))
   (let* ((arcos-hor (get-arcos-horizontais estado))
          (arcos-vert (get-arcos-verticais estado))
@@ -141,6 +150,7 @@
                                 (t (iterar-tabuleiro l (1+ i)))))))))
       (iterar-tabuleiro l i))))
 
+;;Usando predicado
 (defun contar-caixas-fechadas (estado &optional (l 1) (i 1))
   (let* ((arcos-hor (get-arcos-horizontais estado))
          (arcos-vert (get-arcos-verticais estado))
@@ -163,6 +173,9 @@
          (num-total-arcos-hor (1- (length arcos-hor)))
          (num-total-indices-hor (length (car arcos-hor))))
     (labels ((iterar-tabuleiro (l i)
+               (novo-estado (funcall operador l i (no-estado no) jogador))
+        (caixas-jogador-1 (first (no-caixas no)))
+        (caixas-jogador-2 (contar-caixas-fechadas novo-estado)))tabuleiro (l i)
                (cond ((> l num-total-arcos-hor) 0)
                      (t (let ((caixa (estado-caixa arcos-hor arcos-vert l i)))
                           (cond ((and (= caixa 3) (= i num-total-indices-hor)) (+ 1 (iterar-tabuleiro (1+ l) 1)))
@@ -206,13 +219,13 @@
 ;;;;;;;;;;;;;;;;;;
 ;;; Sucessores ;;;
 ;;;;;;;;;;;;;;;;;;
-(defun novo-sucessor (no l i operador)
-  (let* ((novo-estado (funcall operador l i (no-estado no) 2))
+(defun novo-sucessor (no l i operador jogador)
+  (let* ((novo-estado (funcall operador l i (no-estado no) jogador))
         (caixas-jogador-1 (first (no-caixas no)))
         (caixas-jogador-2 (contar-caixas-fechadas novo-estado)))
     (list novo-estado (list caixas-jogador-1 caixas-jogador-2))))
 
-(defun sucessores (no operadores)
+(defun sucessores (no operadores jogador)
   (let* ((arcos-hor (get-arcos-horizontais (no-estado no)))
          (arcos-vert (get-arcos-verticais (no-estado no)))
          (l-maximo (max (length arcos-hor) (length arcos-vert)))
@@ -220,5 +233,5 @@
     (labels ((iterar-tabuleiro (l i)
                (cond ((> l l-maximo) NIL)
                      ((> i i-maximo) (iterar-tabuleiro (1+ l) 1))
-                     (t (append (mapcar (lambda (op) (novo-sucessor no l i op)) operadores) (iterar-tabuleiro l (1+ i)))))))
+                     (t (append (mapcar (lambda (op) (novo-sucessor no l i op jogador)) operadores) (iterar-tabuleiro l (1+ i)))))))
       (iterar-tabuleiro 1 1))))

@@ -66,13 +66,9 @@
                                          (t (car no-solucao))))
           (t (dfs (car *abertos*) f-objetivo f-sucessores operadores profundidade num-solucao (cdr *abertos*) *fechados*)))))
 
-;(max val (minimax 
-(defun minimax (no operadores profundidade peca-max)
+
+(defun minimax (no operadores sucessores heuristica profundidade peca-max)
   (cond ((= 0 profundidade) (heuristica no))
         (t (let ((nos-filhos (sucessores no operadores)))
-             (cond (peca-max (mapcar (lambda (filho)
-                                         (max v (minimax filho operadores (1- profundidade) NIL)))
-                                       nos-filhos))
-                   (t (mapcar (lambda (filho)
-                                         (min v (minimax filho operadores (1- profundidade) T)))
-                                       nos-filhos)))))))
+             (cond (peca-max (reduce 'max (mapcar (lambda (filho) (minimax filho operadores sucessores heuristica (1- profundidade) NIL)) nos-filhos)))
+                   (t (reduce 'min (mapcar (lambda (filho) (minimax filho operadores sucessores heuristica (1- profundidade) T)) nos-filhos))))))))

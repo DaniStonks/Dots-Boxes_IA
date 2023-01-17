@@ -6,6 +6,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Funções auxiliares ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
+(defun trocar-jogador (jogador)
+  (cond ((= jogador 1) 2)
+        (t 1)))
+
 ;;; Funcoes auxiliares da procura
 (defun ordenar-nos (lista-nos)
     (sort lista-nos 'no-menorp))
@@ -67,8 +71,8 @@
           (t (dfs (car *abertos*) f-objetivo f-sucessores operadores profundidade num-solucao (cdr *abertos*) *fechados*)))))
 
 
-(defun minimax (no operadores sucessores heuristica profundidade peca-max)
+(defun minimax (no operadores sucessores avaliacao profundidade jogador)
   (cond ((= 0 profundidade) (heuristica no))
-        (t (let ((nos-filhos (sucessores no operadores)))
-             (cond (peca-max (reduce 'max (mapcar (lambda (filho) (minimax filho operadores sucessores heuristica (1- profundidade) NIL)) nos-filhos)))
-                   (t (reduce 'min (mapcar (lambda (filho) (minimax filho operadores sucessores heuristica (1- profundidade) T)) nos-filhos))))))))
+        (t (let ((nos-filhos (sucessores no operadores jogador)))
+             (cond ((= jogador 1) (reduce 'max (mapcar (lambda (filho) (minimax filho operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador))) nos-filhos)))
+                   (t (reduce 'min (mapcar (lambda (filho) (minimax filho operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador))) nos-filhos))))))))
