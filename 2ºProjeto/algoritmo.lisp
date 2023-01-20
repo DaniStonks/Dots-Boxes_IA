@@ -2,6 +2,8 @@
 ;;;; Funcoes dos metodos de procura
 ;;;; Autor: Daniel Baptista, Rafael Silva
 
+(defvar *alfa* -10000000)
+(defvar *beta* 10000000)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Funções auxiliares ;;
@@ -50,6 +52,12 @@
                                   (t no)))
                           lista-a-filtrar)))
 
+(defun filtrar-nos-filhos (nos)
+  (reduce 'append (mapcar (lambda (no)
+                            (cond((null (no-estado no)) NIL)
+                                 (t (list no))))
+                          nos)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Metodos de procura ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -70,9 +78,10 @@
                                          (t (car no-solucao))))
           (t (dfs (car *abertos*) f-objetivo f-sucessores operadores profundidade num-solucao (cdr *abertos*) *fechados*)))))
 
-
+;;Teste: (minimax (tabuleiro-teste) (operadores) 'sucessores 'avaliacao 2 2)
+;;Resultado: -15
 (defun minimax (no operadores sucessores avaliacao profundidade jogador)
-  (cond ((= 0 profundidade) (heuristica no))
-        (t (let ((nos-filhos (sucessores no operadores jogador)))
-             (cond ((= jogador 1) (reduce 'max (mapcar (lambda (filho) (minimax filho operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador))) nos-filhos)))
+  (cond ((= 0 profundidade) (avaliacao no))
+        (t (let ((nos-filhos (filtrar-nos-filhos (sucessores no operadores jogador))))
+             (cond ((= jogador 2) (reduce 'max (mapcar (lambda (filho) (minimax filho operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador))) nos-filhos)))
                    (t (reduce 'min (mapcar (lambda (filho) (minimax filho operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador))) nos-filhos))))))))
