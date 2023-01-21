@@ -16,14 +16,14 @@
     ((0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))
     ) (0 0)))
 
-(defun tabuleiro-teste ()
+(defun tabuleiro-teste2 ()
   "Retorna um tabuleiro 5x6 (5 caixas na vertical por 6 caixas na horizontal)"
   '((
     ((1 0) (1 1) (1 0))
     ((1 1) (1 0) (0 1))
     ) (1 0)))
 
-(defun tabuleiro-teste2 ()
+(defun tabuleiro-teste1 ()
   "Retorna um tabuleiro 5x6 (5 caixas na vertical por 6 caixas na horizontal)"
   '((
     ((1 0 0 0 0 0) (1 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0))

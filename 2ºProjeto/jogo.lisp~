@@ -56,43 +56,48 @@
 (defun ler-tempo ()
 "Permite fazer a leitura do algoritmo a utilizar."
   (progn
-    (format t "Que algoritmo quer usar para procurar? ~%")
-    (format t "1- Procura na largura ~%")
-    (format t "2- Procura na profundidade ~%")
-    (format t "3- Algoritmo A* ~%")
-    (let ((resposta (read)))
-      (cond ((= resposta 1) 'bfs)
-            ((= resposta 2) 'dfs)
-            (T 'a*)))
-    )
-  )
+    (format t "Tempo limite por jogada para o computador(em segundos)? ~%")
+    (* (read) 1000)))
 
 (defun ler-profundidade()
 "Permite fazer a leitura da profundidade limite para o algoritmo dfs."
     (progn
       (format t "Qual a profundidade limite? ~%")
-      (read)
-      ))
+      (read)))
 
-(defun ler-heuristica()
-"Permite fazer a leitura da heuristica a usar para o algoritmo a*."
-    (progn
-      (format t "Qual a heuristica a usar? ~%")
-      (format t "1 - Numero de caixas fechadas ~%")
-      (format t "2 - Numero de caixas fechadas e numero de caixas perto de fechar ~%")
+(defun ler-jogada ()
+  (let* ((tipo-arco (ler-tipo-arco))
+         (linha (ler-coordenada "linha"))
+         (coluna (ler-coordenada "coluna")))
+    (list linha coluna tipo-arco))) 
+
+(defun ler-tipo-arco ()
+  (progn
+      (format t "Qual o tipo de arco a inserir? ~%")
+      (format t "1 - Arco horizontal ~%")
+      (format t "2 - Arco vertical ~%")
       (let ((resposta (read)))
-        (cond ((= resposta 1) 'heuristica-base)
-              ((= resposta 2) 'heuristica-melhorada)
-              (t 'heuristica-melhorada)))))
+        (cond ((= resposta 1) 'arco-horizontal)
+              (t 'arco-vertical)))))
 
-(defun ler-ficheiro (linha-a-ler ficheiro &optional (linha 1))
-  (let ((linha-lida (read ficheiro nil)))
-    (cond ((= linha-a-ler linha) linha-lida)
-          (t (ler-ficheiro linha-a-ler ficheiro (1+ linha))))))
+(defun ler-coordenada (eixo)
+  (progn
+      (format t "Em que ~A inserir o arco? ~%" eixo)
+      (read)))
 
 ;;;;;;;;;;;;;
 ;; Escrita ;;
 ;;;;;;;;;;;;;
+
+(defun imprime-tabuleiro (tabuleiro)
+  (let ((numLinhas (1- (length tabuleiro))))
+    (labels ((imprimir-tabuleiro (l)
+               (cond ((> l numLinhas) (format t "~%"))
+                     ((progn 
+                       (format t "~A ~%" (linha l tabuleiro))
+                       (imprimir-tabuleiro (1+ l)))))))
+      (imprimir-tabuleiro 0))))
+
 (defun escrever-no-log (no-solucao algoritmo heuristica tempo-execucao diretoria)
   "Permite escrever no final do ficheiro log.dat as seguintes informações do problema, o estado inicial, a solução encontrada, o número de nós gerados e o número de nós expandidos"
   (with-open-file (stream (concatenate 'string diretoria "\\Problemas\\log.dat")
@@ -127,6 +132,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Analise de resultados ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;o programa deverá escrever num ficheiro log.dat e no ecrã qual a jogada realizada, o novo estado, o número de nós analisados, o número de cortes efetuados (de cada tipo) e o tempo gasto. 
 (defun penetrancia (comprimento-objetivo num-nos-gerados)
   (float (/ comprimento-objetivo num-nos-gerados)))
 

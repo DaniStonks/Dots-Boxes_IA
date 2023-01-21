@@ -16,12 +16,12 @@
     ((0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))
     ) (0 0)))
 
-(defun tabuleiro-teste2 ()
+(defun tabuleiro-teste ()
   "Retorna um tabuleiro 5x6 (5 caixas na vertical por 6 caixas na horizontal)"
   '((
-    ((1 0) (1 1) (1 0))
-    ((1 1) (1 0) (0 1))
-    ) (1 0)))
+    ((1 0) (0 0) (0 0))
+    ((1 0) (1 0) (0 0))
+    ) (0 0)))
 
 (defun tabuleiro-teste1 ()
   "Retorna um tabuleiro 5x6 (5 caixas na vertical por 6 caixas na horizontal)"
@@ -119,78 +119,17 @@
 ;;;;;;;;;;;;;;;;;;;
 ;;; Heuristicas ;;;
 ;;;;;;;;;;;;;;;;:;;
-
-;;primeira heuristica - h(x) = o(x) - c(x)
-;;o(x) - numero de caixas necessarias para acabar o problema
-;;c(x) - numero de caixas fechadas
-(defun heuristica-base (estado num-caixas-a-fechar)
-  (- num-caixas-a-fechar (contar-caixas-fechadas estado)))
-
-;;segunda heuristica - h(x) = (w * (o(x) - c(x))) - (w2 * a(x)) - (w3 * b(x))
-;;o(x) - numero de caixas necessarias para acabar o problema
-;;c(x) - numero de caixas fechadas
-;;a(x) - numero de caixas com 3 lados fechados
-;;b(x) - numero de caixas com 2 lados fechados
-;;w1, w2, w3 - fatores de ponderação
-(defun heuristica-melhorada (estado num-caixas-a-fechar)
-  (let ((estado-caixas (obter-estado-caixas estado)))
-    (- (* (- num-caixas-a-fechar (contar-ocorrencias-elemento estado-caixas 4)) 10) (* (contar-ocorrencias-elemento estado-caixas 3) 6) (* (contar-ocorrencias-elemento estado-caixas 2) 3))))
-
 ;;Função de avaliação
 ;;+10 por cada caixa do MAX(Computador)
 ;;-10 por cada caixa do MIN(Adversario)
 ;;+5 por cada caixa com 3 lados fechados
 ;;-5 por cada caixa com 2 lados fechados
 (defun avaliacao (no)
-  (let ((caixas (obter-estado-caixas (no-estado no))))
-    (+ (* 5 (contar-caixas-n-lados (no-estado no) 3)) (* -5 (contar-caixas-n-lados (no-estado no) 2)) (* 10 (second (no-caixas no))) (* -10 (first (no-caixas no))))))
+  (+ (* 5 (contar-caixas-n-lados (no-estado no) 3)) (* -5 (contar-caixas-n-lados (no-estado no) 2)) (* 10 (second (no-caixas no))) (* -10 (first (no-caixas no)))))
 
 (defun vencedor (caixas)
   (cond ((> (first caixas) (second caixas)) "Jogador 1")
         (t "Jogador 2")))
-
-;;Usando predicado
-(defun contar-caixas-fechadas (estado &optional (l 1) (i 1))
-  (let* ((arcos-hor (get-arcos-horizontais estado))
-         (arcos-vert (get-arcos-verticais estado))
-         (num-total-arcos-hor (1- (length arcos-hor)))
-         (num-total-indices-hor (length (car arcos-hor))))
-    (labels ((iterar-tabuleiro (l i)
-               (cond ((> l num-total-arcos-hor) 0)
-                     (t (let ((caixa (caixa-fechadap arcos-hor arcos-vert l i)))
-                          (cond ((and caixa (= i num-total-indices-hor)) (+ 1 (iterar-tabuleiro (1+ l) 1)))
-                                (caixa (+ 1 (iterar-tabuleiro l (1+ i))))
-                                ((= i num-total-indices-hor) (iterar-tabuleiro (1+ l) 1))
-                                (t (iterar-tabuleiro l (1+ i)))))))))
-      (iterar-tabuleiro l i))))
-
-(defun contar-caixas-tres-lados (estado &optional (l 1) (i 1))
-  (let* ((arcos-hor (get-arcos-horizontais estado))
-         (arcos-vert (get-arcos-verticais estado))
-         (num-total-arcos-hor (1- (length arcos-hor)))
-         (num-total-indices-hor (length (car arcos-hor))))
-    (labels ((iterar-tabuleiro (l i)
-               (cond ((> l num-total-arcos-hor) 0)
-                     (t (let ((caixa (estado-caixa arcos-hor arcos-vert l i)))
-                          (cond ((and (= caixa 3) (= i num-total-indices-hor)) (+ 1 (iterar-tabuleiro (1+ l) 1)))
-                                ((= caixa 3) (+ 1 (iterar-tabuleiro l (1+ i))))
-                                ((= i num-total-indices-hor) (iterar-tabuleiro (1+ l) 1))
-                                (t (iterar-tabuleiro l (1+ i)))))))))
-      (iterar-tabuleiro l i))))
-
-(defun contar-caixas-dois-lados (estado &optional (l 1) (i 1))
-  (let* ((arcos-hor (get-arcos-horizontais estado))
-         (arcos-vert (get-arcos-verticais estado))
-         (num-total-arcos-hor (1- (length arcos-hor)))
-         (num-total-indices-hor (length (car arcos-hor))))
-    (labels ((iterar-tabuleiro (l i)
-               (cond ((> l num-total-arcos-hor) 0)
-                     (t (let ((caixa (estado-caixa arcos-hor arcos-vert l i)))
-                          (cond ((and (= caixa 2) (= i num-total-indices-hor)) (+ 1 (iterar-tabuleiro (1+ l) 1)))
-                                ((= caixa 2) (+ 1 (iterar-tabuleiro l (1+ i))))
-                                ((= i num-total-indices-hor) (iterar-tabuleiro (1+ l) 1))
-                                (t (iterar-tabuleiro l (1+ i)))))))))
-      (iterar-tabuleiro l i))))
 
 (defun contar-caixas-n-lados (estado num-lados &optional (l 1) (i 1))
   (let* ((arcos-hor (get-arcos-horizontais estado))
@@ -217,46 +156,24 @@
                                             (list lado-1 lado-2 lado-3 lado-4)))))
     (= num-lados-atual num-lados)))
 
-;;Teste: (obter-estado-caixas (no-estado (tabuleiro-teste)))
-;;Resultado: (0 0 1 1 2 3 0 2 4), isto significa que existem 3 caixas sem lados preenchidos, 2 com 1 lado, 2 com 2 lados, 1 com 3 lados e 1 fechada.
-(defun obter-estado-caixas (estado &optional (l 1) (i 1))
-  (let* ((arcos-hor (get-arcos-horizontais estado))
-         (arcos-vert (get-arcos-verticais estado))
-         (num-total-arcos-hor (1- (length arcos-hor)))
-         (num-total-indices-hor (length (car arcos-hor))))
-    (labels ((iterar-tabuleiro (l i)
-               (cond ((> l num-total-arcos-hor) NIL)
-                     (t (let ((caixa (estado-caixa arcos-hor arcos-vert l i)))
-                          (cond ((= i num-total-indices-hor) (cons caixa (iterar-tabuleiro (1+ l) 1)))
-                                (t (cons caixa (iterar-tabuleiro l (1+ i))))))))))
-      (iterar-tabuleiro l i))))
+(defun selecionar-jogada-avaliacao (estado func-avaliacao avaliacao)
+  (first (reduce 'append (mapcar (lambda (sucessor) 
+                                   (cond ((and (= (funcall func-avaliacao sucessor) avaliacao)(not (null (no-estado sucessor)))) (list sucessor))
+                                         (t NIL)))
+                                 (sucessores estado (operadores) 2)))))
 
-(defun estado-caixa-deprecated(arcos-hor arcos-vert l i)
-  (let ((lado-1 (get-arco-na-posicao l i arcos-hor))
-        (lado-2 (get-arco-na-posicao (1+ l) i arcos-hor))
-        (lado-3 (get-arco-na-posicao i l arcos-vert))
-        (lado-4 (get-arco-na-posicao (1+ i) l arcos-vert)))
-    (cond ((and (null lado-1) (null lado-2) (null lado-3) (null lado-4)) 0)
-          (t (+ lado-1 lado-2 lado-3 lado-4)))))
-
-;;Teste: (caixa-fechadap (get-arcos-horizontais (no-estado (tabuleiro-teste))) (get-arcos-verticais (no-estado(tabuleiro-teste))) 3 3)
-;;Resultado: T
-(defun caixa-fechadap(arcos-hor arcos-vert l i)
-  (let ((lado-1 (get-arco-na-posicao l i arcos-hor))
-        (lado-2 (get-arco-na-posicao (1+ l) i arcos-hor))
-        (lado-3 (get-arco-na-posicao i l arcos-vert))
-        (lado-4 (get-arco-na-posicao (1+ i) l arcos-vert)))
-    (cond ((or (eq lado-1 0) (eq lado-2 0) (eq lado-3 0) (eq lado-4 0)) NIL)
-          (t T))))
+(defun jogada-caixa-fechadap (estado-antigo estado-novo)
+  (let ((num-caixas-antigo (apply '+ (no-caixas estado-antigo)))
+        (num-caixas-novo (contar-caixas-n-lados estado-novo 4)))
+    (cond ((/= num-caixas-antigo num-caixas-novo) T)
+          (t NIL))))
 
 ;;;;;;;;;;;;;;;;;;
 ;;; Sucessores ;;;
 ;;;;;;;;;;;;;;;;;;
 (defun novo-sucessor (no l i operador jogador)
-  (let* ((novo-estado (funcall operador l i (no-estado no) jogador))
-         (num-caixas-antigo (apply '+ (no-caixas no)))
-         (num-caixas-novo (contar-caixas-fechadas novo-estado))
-         (novas-caixas (cond ((/= num-caixas-antigo num-caixas-novo) (cond ((= jogador 1) (list (1+ (first (no-caixas no))) (second (no-caixas no))))
+  (let* ((novo-estado (funcall operador l i (no-estado no) jogador))      
+         (novas-caixas (cond ((jogada-caixa-fechadap no novo-estado) (cond ((= jogador 1) (list (1+ (first (no-caixas no))) (second (no-caixas no))))
                                                                            (t (list (first (no-caixas no)) (1+ (second (no-caixas no)))))))
                              (t (no-caixas no)))))
     (list novo-estado novas-caixas)))

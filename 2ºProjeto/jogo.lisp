@@ -9,26 +9,7 @@
   "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial, do algoritmo, a heuristica e a profundidade se utilizadas"
   (let* ((carregamentoFicheiros (carregar-ficheiros (ler-diretoria)))
          (tabuleiro (tabuleiro-inicial))
-         (tempo-execucao-inicial (get-internal-real-time))
-         (no-solucao (cond
-                      ((equal algoritmo 'bfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) num-solucao *abertos* *fechados*))
-                      ((equal algoritmo 'dfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) profundidade num-solucao *abertos* *fechados*))
-                      ((equal algoritmo 'a*) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) heuristica num-solucao *abertos* *fechados*))))
-         (tempo-execucao (obter-tempo-execucao-em-segundos tempo-execucao-inicial (get-internal-real-time))))
-    (mostrar-solucao no-solucao tempo-execucao)
-    (escrever-no-log no-solucao algoritmo heuristica tempo-execucao diretoria)))
-
-(defun jogar (estado &optional (tempo 0))
-  "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial, do algoritmo, a heuristica e a profundidade se utilizadas"
-  (let* ((diretoria (ler-diretoria))
-         (ignorar (carregar-ficheiros diretoria))
-         (problema (ler-problema diretoria))
-         (no (cria-no (car problema)))
-         (num-solucao (second problema))
-         (algoritmo (ler-algoritmo))
-         (heuristica (cond ((eql algoritmo 'a*) (ler-heuristica)) (t NIL)))
-         (profundidade (cond ((eql algoritmo 'dfs) (ler-profundidade)) (T 9999)))
-         (tempo-execucao-inicial (get-internal-real-time))
+         (tempo-computador (ler-tempo))
          (no-solucao (cond
                       ((equal algoritmo 'bfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) num-solucao *abertos* *fechados*))
                       ((equal algoritmo 'dfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) profundidade num-solucao *abertos* *fechados*))
@@ -41,6 +22,51 @@
   (progn
     (load (concatenate 'string diretoria "\\puzzle.lisp"))
     (load (concatenate 'string diretoria "\\algoritmo.lisp"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; Funções auxiliares ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;arco-horizontal (pos-lista-arcos pos-arco tabuleiro-estado &optional (x 1))
+;;Teste: (colocar-arco (3 1 'ARCO-HORIZONTAL) (tabuleiro-teste))
+;;Resultado: (estado novo)
+(defun colocar-arco (jogada estado)
+  (let* ((novo-estado (funcall (third jogada) (first jogada) (second jogada) (no-estado estado)))
+         (novas-caixas (cond ((/= (+ (first (no-caixas estado)) (second (no-caixas estado))) (contar-caixas-n-lados novo-estado 4)) (list (1+ (first (no-caixas estado))) (second (no-caixas estado))))
+                             (t (no-caixas estado)))))
+    (list novo-estado novas-caixas)))
+
+(defun trocar-jogador (jogador)
+  (cond ((= jogador 1) 2)
+        (t 1)))
+
+(defun obter-tempo-em-segundos (tempo-inicial tempo-final)
+  (float (/ (- tempo-final tempo-inicial) 1000)))
+
+;;;;;;;;;;;;;;;;;;;;;
+;; Funções de jogo ;;
+;;;;;;;;;;;;;;;;;;;;;
+
+;(jogo (tabuleiro-teste) 1)
+(defun jogo (estado jogador)
+  (progn
+    (imprime-tabuleiro estado)
+    (let ((novo-estado (cond ((= jogador 1) (jogar-humano estado))
+                             (t (jogar estado 2)))))
+      (cond ((tabuleiro-preenchidop (no-estado novo-estado)) (vencedor))
+            (t (cond ((jogada-caixa-fechadap estado (no-estado novo-estado)) (jogo novo-estado jogador))
+                     (t (jogo novo-estado (trocar-jogador jogador)))))))))
+
+(defun jogar-humano (estado)
+  (let ((jogada (ler-jogada)))
+    (colocar-arco jogada estado)))
+        
+(defun jogar (estado &optional (profundidade 0) (tempo 0)) ;;apenas utilizada pelo computador, nunca pelo humano
+  "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial, do algoritmo, a heuristica e a profundidade se utilizadas"
+  (let* ((melhor-jogada-aval (minimax estado (operadores) 'sucessores 'avaliacao profundidade 2))
+         (novo-estado (selecionar-jogada-avaliacao estado 'avaliacao melhor-jogada-aval)))
+    novo-estado))
+         
 
 ;;;;;;;;;;;;;
 ;; Leitura ;;
@@ -57,7 +83,10 @@
 "Permite fazer a leitura do algoritmo a utilizar."
   (progn
     (format t "Tempo limite por jogada para o computador(em segundos)? ~%")
-    (* (read) 1000)))
+    (let ((resposta (read)))
+        (cond ((< resposta 1) 1000)
+              ((> resposta 20) 20000)
+              (t (* resposta 1000))))))
 
 (defun ler-profundidade()
 "Permite fazer a leitura da profundidade limite para o algoritmo dfs."
@@ -89,18 +118,16 @@
 ;; Escrita ;;
 ;;;;;;;;;;;;;
 
+;;(imprime-tabuleiro (tabuleiro-inicial))
 (defun imprime-tabuleiro (tabuleiro)
-  (let ((numLinhas (1- (length tabuleiro))))
-    (labels ((imprimir-tabuleiro (l)
-               (cond ((> l numLinhas) (format t "~%"))
-                     ((progn 
-                       (format t "~A ~%" (linha l tabuleiro))
-                       (imprimir-tabuleiro (1+ l)))))))
-      (imprimir-tabuleiro 0))))
+  (progn
+    (format t "~A ~%" (get-arcos-horizontais (no-estado tabuleiro)))
+    (format t "~A ~%" (get-arcos-verticais (no-estado tabuleiro)))))
 
-(defun escrever-no-log (no-solucao algoritmo heuristica tempo-execucao diretoria)
+;;o programa deverá escrever num ficheiro log.dat e no ecrã qual a jogada realizada, o novo estado, o número de nós analisados, o número de cortes efetuados (de cada tipo) e o tempo gasto.
+(defun imprimir-jogada (diretoria jogada num-nos num-cortes tempo)
   "Permite escrever no final do ficheiro log.dat as seguintes informações do problema, o estado inicial, a solução encontrada, o número de nós gerados e o número de nós expandidos"
-  (with-open-file (stream (concatenate 'string diretoria "\\Problemas\\log.dat")
+  (with-open-file (stream (concatenate 'string diretoria "\\log.dat")
                          :direction :output
                          :if-exists :append
                          :if-does-not-exist :create)
@@ -116,40 +143,21 @@
         (escreve-lista-nos no-solucao stream)
         (format stream "~% ~% ~%")))))
 
-(defun escreve-lista-nos (lista &optional (stream t))
-  "Permite escrever no ecra uma lista de nos do problema das vasilhas, e.g. um conjunto de sucessores, a lista de abertos etc."
-  (cond
-   ((null lista) nil)
-   (T (progn 
-        (format stream "Estado: ~A | Profundidade: ~A | Heuristica: ~A | Custo: ~A ~%" (no-estado lista) (no-profundidade lista) (no-heuristica lista) (no-custo lista)) 
-        (escreve-lista-nos (no-pai lista) stream)))))
-
-(defun mostrar-solucao (no-solucao tempo-execucao)
-  (progn
-    (escreve-lista-nos no-solucao)
-    (format t "Numero de nós gerados: ~A | Numero de nós expandidos: ~A | Penetrância: ~A | Factor de ramificação média: ~A | Tempo de execução: ~A segundos ~%" (+ (length *abertos*)(length *fechados*)) (length *fechados*) (penetrancia (no-profundidade no-solucao) (+ (length *abertos*) (length *fechados*))) (bisseccao 'f-fator-ramificacao 0 10 no-solucao) tempo-execucao)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Analise de resultados ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;o programa deverá escrever num ficheiro log.dat e no ecrã qual a jogada realizada, o novo estado, o número de nós analisados, o número de cortes efetuados (de cada tipo) e o tempo gasto. 
-(defun penetrancia (comprimento-objetivo num-nos-gerados)
-  (float (/ comprimento-objetivo num-nos-gerados)))
-
-(defun bisseccao (f a b no-solucao &optional (tolerancia 0.00001))
-  (let ((fa (funcall f a no-solucao))
-        (fb (funcall f b no-solucao)))
-    (cond ((< (/ (- b a) 2) tolerancia) (float (/ (+ a b) 2)))
-           ( t(and (< fa 0) (> fb 0)) (let* ((p-med (/ (+ a b) 2))
-                                             (fc (funcall f p-med no-solucao)))
-                                        (cond ((< fc 0) (bisseccao f p-med b no-solucao))
-                                              (t (bisseccao f a p-med no-solucao))))))))
-
-(defun f-fator-ramificacao (x no-solucao)
-  (let ((comp-sol (no-profundidade no-solucao))
-        (total-nos (+ (length *abertos*)(length *fechados*))))
-    (- (/ (* x (- (expt x comp-sol) 1))  (- x 1)) total-nos)))
-
-(defun obter-tempo-execucao-em-segundos (tempo-inicial tempo-final)
-  (float (/ (- tempo-final tempo-inicial) 1000)))
+;;o programa deverá escrever num ficheiro log.dat e no ecrã qual a jogada realizada, o novo estado, o número de nós analisados, o número de cortes efetuados (de cada tipo) e o tempo gasto.
+(defun escrever-no-log (diretoria jogada num-nos num-cortes tempo)
+  "Permite escrever no final do ficheiro log.dat as seguintes informações do problema, o estado inicial, a solução encontrada, o número de nós gerados e o número de nós expandidos"
+  (with-open-file (stream (concatenate 'string diretoria "\\log.dat")
+                         :direction :output
+                         :if-exists :append
+                         :if-does-not-exist :create)
+    (let ((nos-gerados (+ (length *abertos*)(length *fechados*)))
+          (nos-expandidos (length *fechados*)))
+      (progn
+        (format stream "Algoritmo utilizado - ~A, ~@[~A~] ~%" algoritmo heuristica)
+        (format stream "Solução encontrada: ~A ~%" (no-estado no-solucao))
+        (format stream "Estado inicial: ~A ~%" (estado-no-inicial no-solucao))
+        (format stream "Número de nós gerados: ~A | Número de nós expandidos: ~A ~%" nos-gerados nos-expandidos)
+        (format stream "Penetrância: ~A | Factor de ramificação medio: ~A | Tempo de execução: ~A ~%" (penetrancia (no-profundidade no-solucao) nos-gerados) (bisseccao 'f-fator-ramificacao 0 10 no-solucao) tempo-execucao)
+        (format stream "Caminho ~%")
+        (escreve-lista-nos no-solucao stream)
+        (format stream "~% ~% ~%")))))
