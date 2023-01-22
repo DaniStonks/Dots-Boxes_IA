@@ -23,13 +23,6 @@
     ((1 0) (1 0) (0 0))
     ) (0 0)))
 
-(defun tabuleiro-teste1 ()
-  "Retorna um tabuleiro 5x6 (5 caixas na vertical por 6 caixas na horizontal)"
-  '((
-    ((1 0 0 0 0 0) (1 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0))
-    ((1 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))
-    ) (0 0)))
-
 ;;Funcoes Auxiliares
 (defun substituir (indice lista &optional (x 1))
   "Dada uma lista e um indice, substitui o valor nessa posicao por outro passado por argumento"
@@ -41,13 +34,6 @@
   "Insere um arco nos arcos horizontais ou verticais de um tabuleiro, na posicao escolhida"
   (cond ((= (1- pos-lista-arcos) 0) (cons (substituir pos-arco (car lista-arcos) x) (cdr lista-arcos)))
         (t (cons (car lista-arcos) (arco-na-posicao (1- pos-lista-arcos) pos-arco (cdr lista-arcos) x)))))
-
-;;Teste: (contar-ocorrencias-elemento (obter-estado-caixas (no-estado (tabuleiro-teste))) 0)
-;;Resultado: 3
-(defun contar-ocorrencias-elemento (lista elemento)
-  (cond ((null lista) 0)
-        ((equal elemento (car lista)) (+ 1 (contar-ocorrencias-elemento (cdr lista) elemento)))
-        (t (contar-ocorrencias-elemento (cdr lista) elemento))))
 
 ;;Teste:(tabuleiro-preenchidop (no-estado (tabuleiro-teste)))
 ;;Resultado: NIL
@@ -86,10 +72,6 @@
 (defun get-arco-na-posicao (pos-lista-arcos pos-arco arcos)
   "Retorna o arco numa posicao passada por argumento de uma lista de arcos horizontais ou verticais"
   (nth (1- pos-arco) (nth (1- pos-lista-arcos) arcos)))
-
-(defun arco-na-posicaop (pos-lista-arcos pos-arco arcos)
-  (cond ((/= 0 (get-arco-na-posicao pos-lista-arcos pos-arco arcos)) T)
-        (t NIL)))
 
 ;;;;;;;;;;;;;;;;;;
 ;;; Operadores ;;;
@@ -168,16 +150,38 @@
     (cond ((/= num-caixas-antigo num-caixas-novo) T)
           (t NIL))))
 
+(defun jogada-caixa-fechadas (estado-antigo estado-novo)
+  (let ((num-caixas-antigo (apply '+ (no-caixas estado-antigo)))
+        (num-caixas-novo (contar-caixas-n-lados estado-novo 4)))
+    (cond ((/= num-caixas-antigo num-caixas-novo) (- num-caixas-novo num-caixas-antigo))
+          (t 0))))
+
 ;;;;;;;;;;;;;;;;;;
 ;;; Sucessores ;;;
 ;;;;;;;;;;;;;;;;;;
 (defun novo-sucessor (no l i operador jogador)
-  (let* ((novo-estado (funcall operador l i (no-estado no) jogador))      
-         (novas-caixas (cond ((jogada-caixa-fechadap no novo-estado) (cond ((= jogador 1) (list (1+ (first (no-caixas no))) (second (no-caixas no))))
-                                                                           (t (list (first (no-caixas no)) (1+ (second (no-caixas no)))))))
-                             (t (no-caixas no)))))
+  (let* ((novo-estado (funcall operador l i (no-estado no) jogador))     
+         (novas-caixas (let ((caixas (jogada-caixa-fechadas no novo-estado)))
+                         (cond ((/= caixas 0) (cond ((= jogador 1) (list (+ caixas (first (no-caixas no))) (second (no-caixas no))))
+                                                    (t (list (first (no-caixas no)) (+ caixas (second (no-caixas no)))))))
+                               (t (no-caixas no))))))
     (list novo-estado novas-caixas)))
 
+(defun obter-jogada-atraves-estado-final (estado-inicial estado-final jogador)
+  (let* ((arcos-hor (get-arcos-horizontais (no-estado estado-inicial)))
+         (arcos-vert (get-arcos-verticais (no-estado estado-inicial)))
+         (l-maximo (max (length arcos-hor) (length arcos-vert)))
+         (i-maximo (max (length (car arcos-hor)) (length (car arcos-vert)))))
+    (labels ((iterar-tabuleiro (l i)
+               (let ((jogadas (mapcar (lambda (op) (novo-sucessor estado-inicial l i op jogador)) (operadores))))
+                 (cond ((equal estado-final (first jogadas)) (list l i 'arco-horizontal))
+                       ((equal estado-final (second jogadas)) (list l i 'arco-vertical))
+                       ((> l l-maximo) NIL)
+                       ((> i i-maximo) (iterar-tabuleiro (1+ l) 1))
+                       (t (iterar-tabuleiro l (1+ i)))))))
+      (iterar-tabuleiro 1 1))))
+
+;;(sucessores (tabuleiro-teste) (operadores) 2)
 (defun sucessores (no operadores jogador)
   (let* ((arcos-hor (get-arcos-horizontais (no-estado no)))
          (arcos-vert (get-arcos-verticais (no-estado no)))

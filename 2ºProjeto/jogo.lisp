@@ -27,14 +27,14 @@
 ;; Funções auxiliares ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;arco-horizontal (pos-lista-arcos pos-arco tabuleiro-estado &optional (x 1))
 ;;Teste: (colocar-arco (3 1 'ARCO-HORIZONTAL) (tabuleiro-teste))
 ;;Resultado: (estado novo)
 (defun colocar-arco (jogada estado)
   (let* ((novo-estado (funcall (third jogada) (first jogada) (second jogada) (no-estado estado)))
-         (novas-caixas (cond ((/= (+ (first (no-caixas estado)) (second (no-caixas estado))) (contar-caixas-n-lados novo-estado 4)) (list (1+ (first (no-caixas estado))) (second (no-caixas estado))))
-                             (t (no-caixas estado)))))
-    (list novo-estado novas-caixas)))
+         (novas-caixas (let ((num-caixas (- (contar-caixas-n-lados novo-estado 4) (first (no-caixas estado)) (second (no-caixas estado)))))
+                         (cond ((/= num-caixas 0) (list (+ num-caixas (first (no-caixas estado))) (second (no-caixas estado))))
+                               (t (no-caixas estado))))))
+    (list jogada (list novo-estado novas-caixas))))
 
 (defun trocar-jogador (jogador)
   (cond ((= jogador 1) 2)
@@ -43,17 +43,33 @@
 (defun obter-tempo-em-segundos (tempo-inicial tempo-final)
   (float (/ (- tempo-final tempo-inicial) 1000)))
 
+(defun obter-melhor-jogada (estado &optional (profundidade 0) (tempo 0))
+  (let* ((sucessores (filtrar-nos-filhos (sucessores estado (operadores) 2)))
+         (alfabeta-lista (mapcar (lambda (filho)
+                                   (setf *alfa* -10000000)
+                                   (setf *beta* 10000000)
+                                   (alfabeta filho (operadores) 'sucessores 'avaliacao 1 1))
+                                 sucessores))
+         (melhor-jogada-indice (obter-indice-elemento alfabeta-lista (apply 'max alfabeta-lista))))
+    (nth melhor-jogada-indice sucessores)))
+
+(defun obter-indice-elemento(lista elemento)
+  (cond ((null lista) NIL)
+        ((eq (car lista) elemento) 0)
+        (t (1+ (obter-indice-elemento (cdr lista) elemento)))))
+
 ;;;;;;;;;;;;;;;;;;;;;
 ;; Funções de jogo ;;
 ;;;;;;;;;;;;;;;;;;;;;
 
-;(jogo (tabuleiro-teste) 1)
+;(jogo (tabuleiro-inicial) 1)
 (defun jogo (estado jogador)
   (progn
     (imprime-tabuleiro estado)
-    (let ((novo-estado (cond ((= jogador 1) (jogar-humano estado))
-                             (t (jogar estado 2)))))
-      (cond ((tabuleiro-preenchidop (no-estado novo-estado)) (vencedor))
+    (let* ((nova-jogada (cond ((= jogador 1) (jogar-humano estado))
+                              (t (jogar estado 2))))
+           (novo-estado (second nova-jogada)))
+      (cond ((tabuleiro-preenchidop (no-estado novo-estado)) (vencedor (no-caixas novo-estado)))
             (t (cond ((jogada-caixa-fechadap estado (no-estado novo-estado)) (jogo novo-estado jogador))
                      (t (jogo novo-estado (trocar-jogador jogador)))))))))
 
@@ -61,12 +77,12 @@
   (let ((jogada (ler-jogada)))
     (colocar-arco jogada estado)))
         
+;(jogar (tabuleiro-teste) 2)
 (defun jogar (estado &optional (profundidade 0) (tempo 0)) ;;apenas utilizada pelo computador, nunca pelo humano
   "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial, do algoritmo, a heuristica e a profundidade se utilizadas"
-  (let* ((melhor-jogada-aval (minimax estado (operadores) 'sucessores 'avaliacao profundidade 2))
-         (novo-estado (selecionar-jogada-avaliacao estado 'avaliacao melhor-jogada-aval)))
-    novo-estado))
-         
+  (let* ((melhor-jogada (obter-melhor-jogada estado profundidade tempo))
+         (jogada-efetuada (obter-jogada-atraves-estado-final estado melhor-jogada 2)))
+    (list jogada-efetuada melhor-jogada)))
 
 ;;;;;;;;;;;;;
 ;; Leitura ;;
@@ -122,7 +138,7 @@
 (defun imprime-tabuleiro (tabuleiro)
   (progn
     (format t "~A ~%" (get-arcos-horizontais (no-estado tabuleiro)))
-    (format t "~A ~%" (get-arcos-verticais (no-estado tabuleiro)))))
+    (format t "~A ~%~%~%" (get-arcos-verticais (no-estado tabuleiro)))))
 
 ;;o programa deverá escrever num ficheiro log.dat e no ecrã qual a jogada realizada, o novo estado, o número de nós analisados, o número de cortes efetuados (de cada tipo) e o tempo gasto.
 (defun imprimir-jogada (diretoria jogada num-nos num-cortes tempo)
