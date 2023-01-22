@@ -76,33 +76,35 @@
 
 ;;Teste: (minimax (tabuleiro-teste) (operadores) 'sucessores 'avaliacao 2 2)
 ;;Resultado: 5
-(defun minimax (no operadores sucessores avaliacao profundidade jogador)
+(defun minimax2 (no operadores sucessores avaliacao profundidade jogador)
   (cond ((= 0 profundidade) (avaliacao no))
         (t (let ((nos-filhos (filtrar-nos-filhos (sucessores no operadores jogador))))
              (cond ((= jogador 2) (reduce 'max (mapcar (lambda (filho) (minimax filho operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador))) nos-filhos)))
                    (t (reduce 'min (mapcar (lambda (filho) (minimax filho operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador))) nos-filhos))))))))
 
-
-;;Teste: (minimax (tabuleiro-teste) (operadores) 'sucessores 'avaliacao 2 2)
-;;Resultado: 
+;;Teste: (alfabeta (tabuleiro-teste) (operadores) 'sucessores 'avaliacao 2 2)
+;;Resultado: 5
 (defun alfabeta (no operadores sucessores avaliacao profundidade jogador)
-  (cond ((= 0 profundidade) (avaliacao no))
-        (t (let ((nos-filhos (filtrar-nos-filhos (sucessores no operadores jogador))))
-             (cond ((= jogador 2) (let ((valor (reduce 'max (mapcar (lambda (filho) (minimax filho operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador))) nos-filhos))))
-                                    (cond ((> valor *beta*) ...)
-                                          (t (setf *alfa* (max *alfa* valor))))))
-                   (t (let ((valor (reduce 'min (mapcar (lambda (filho) (minimax filho operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador))) nos-filhos))))
-                        (cond ((< valor *alfa*) ...)
-                              (t (setf *beta* (min *beta* valor)))))))))))
+  (labels ((maximizar (nos &optional (valor -10000000))
+             (cond ((null nos) valor)
+                   (t (let ((temp-valor (max valor (alfabeta (car nos) operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador)))))
+                        (cond ((> temp-valor *beta*) temp-valor)
+                              (t (setf *alfa* (max *alfa* temp-valor))
+                                 (maximizar (cdr nos) temp-valor)))))))
+           (minimizar (nos &optional (valor 10000000))
+             (cond ((null nos) valor)
+                   (t (let ((temp-valor (min valor (alfabeta (car nos) operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador)))))
+                        (cond ((< temp-valor *alfa*) temp-valor)
+                              (t (setf *beta* (min *beta* temp-valor))
+                                 (minimizar (cdr nos) temp-valor))))))))
+    (cond ((= 0 profundidade) (avaliacao no))
+          (t (let ((nos-filhos (filtrar-nos-filhos (sucessores no operadores jogador))))
+               (cond ((= jogador 2) (maximizar nos-filhos))
+                     (t (minimizar nos-filhos))))))))
 
-function alphabeta(node, depth, a, ß, maximizingPlayer) is ///
-    if depth = 0 or node is a terminal node then  ///
-        return the heuristic value of node  ///
-    if maximizingPlayer then ///
-        value := -8 ///
-        for each child of node do  ///
-            value := max(value, alphabeta(child, depth - 1, a, ß, FALSE)) ///
-            if value > ß then  ///
-                break (* ß cutoff *)
-            a := max(a, value)  ///
-        return value  ///
+
+(defun teste (l op &optional (best NIL))
+  (cond ((null l) best)
+        ((null best) (e (cdr l) op (car l)))
+        ((funcall op (cdr (car l)) (cdr best)) (e (cdr l) op (car l)))
+        (t (e (cdr l) op best))))
