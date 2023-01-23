@@ -16,6 +16,13 @@
     ((0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))
     ) (0 0)))
 
+(defun teste2 ()
+  "Retorna um tabuleiro 5x6 (5 caixas na vertical por 6 caixas na horizontal)"
+  '((
+    ((1 1 2 1 2 2) (1 2 2 1 1 1) (1 2 2 2 2 2) (2 2 1 2 2 2) (2 2 1 2 2 2) (2 2 1 2 2 0)) 
+    ((2 2 2 2 2) (2 1 1 1 1) (1 2 2 2 2) (2 2 1 1 1) (2 1 1 2 1) (2 2 1 1 1) (2 2 0 0 0)) 
+    ) (0 0)))
+
 (defun tabuleiro-teste ()
   "Retorna um tabuleiro 5x6 (5 caixas na vertical por 6 caixas na horizontal)"
   '((
@@ -35,7 +42,7 @@
   (cond ((= (1- pos-lista-arcos) 0) (cons (substituir pos-arco (car lista-arcos) x) (cdr lista-arcos)))
         (t (cons (car lista-arcos) (arco-na-posicao (1- pos-lista-arcos) pos-arco (cdr lista-arcos) x)))))
 
-;;Teste:(tabuleiro-preenchidop (no-estado (tabuleiro-teste)))
+;;Teste:(tabuleiro-preenchidop (no-tabuleiro (tabuleiro-teste)))
 ;;Resultado: NIL
 (defun tabuleiro-preenchidop (estado)
   (let* ((arcos-hor (get-arcos-horizontais estado))
@@ -55,7 +62,7 @@
 ;;;;;;;;;;;;;;;;;;
 ;;; Selectores ;;;
 ;;;;;;;;;;;;;;;;;;
-(defun no-estado (no)
+(defun no-tabuleiro (no)
   (first no))
 
 (defun no-caixas (no)
@@ -107,11 +114,12 @@
 ;;+5 por cada caixa com 3 lados fechados
 ;;-5 por cada caixa com 2 lados fechados
 (defun avaliacao (no)
-  (+ (* 5 (contar-caixas-n-lados (no-estado no) 3)) (* -5 (contar-caixas-n-lados (no-estado no) 2)) (* 10 (second (no-caixas no))) (* -10 (first (no-caixas no)))))
+  (+ (* 5 (contar-caixas-n-lados (no-tabuleiro no) 3)) (* -5 (contar-caixas-n-lados (no-tabuleiro no) 2)) (* 10 (second (no-caixas no))) (* -10 (first (no-caixas no)))))
 
 (defun vencedor (caixas)
   (cond ((> (first caixas) (second caixas)) "Jogador 1")
-        (t "Jogador 2")))
+        ((< (first caixas) (second caixas)) "Jogador 2")
+        (t "Empate")))
 
 (defun contar-caixas-n-lados (estado num-lados &optional (l 1) (i 1))
   (let* ((arcos-hor (get-arcos-horizontais estado))
@@ -140,7 +148,7 @@
 
 (defun selecionar-jogada-avaliacao (estado func-avaliacao avaliacao)
   (first (reduce 'append (mapcar (lambda (sucessor) 
-                                   (cond ((and (= (funcall func-avaliacao sucessor) avaliacao)(not (null (no-estado sucessor)))) (list sucessor))
+                                   (cond ((and (= (funcall func-avaliacao sucessor) avaliacao)(not (null (no-tabuleiro sucessor)))) (list sucessor))
                                          (t NIL)))
                                  (sucessores estado (operadores) 2)))))
 
@@ -160,7 +168,7 @@
 ;;; Sucessores ;;;
 ;;;;;;;;;;;;;;;;;;
 (defun novo-sucessor (no l i operador jogador)
-  (let* ((novo-estado (funcall operador l i (no-estado no) jogador))     
+  (let* ((novo-estado (funcall operador l i (no-tabuleiro no) jogador))     
          (novas-caixas (let ((caixas (jogada-caixa-fechadas no novo-estado)))
                          (cond ((/= caixas 0) (cond ((= jogador 1) (list (+ caixas (first (no-caixas no))) (second (no-caixas no))))
                                                     (t (list (first (no-caixas no)) (+ caixas (second (no-caixas no)))))))
@@ -168,8 +176,8 @@
     (list novo-estado novas-caixas)))
 
 (defun obter-jogada-atraves-estado-final (estado-inicial estado-final jogador)
-  (let* ((arcos-hor (get-arcos-horizontais (no-estado estado-inicial)))
-         (arcos-vert (get-arcos-verticais (no-estado estado-inicial)))
+  (let* ((arcos-hor (get-arcos-horizontais (no-tabuleiro estado-inicial)))
+         (arcos-vert (get-arcos-verticais (no-tabuleiro estado-inicial)))
          (l-maximo (max (length arcos-hor) (length arcos-vert)))
          (i-maximo (max (length (car arcos-hor)) (length (car arcos-vert)))))
     (labels ((iterar-tabuleiro (l i)
@@ -183,8 +191,8 @@
 
 ;;(sucessores (tabuleiro-teste) (operadores) 2)
 (defun sucessores (no operadores jogador)
-  (let* ((arcos-hor (get-arcos-horizontais (no-estado no)))
-         (arcos-vert (get-arcos-verticais (no-estado no)))
+  (let* ((arcos-hor (get-arcos-horizontais (no-tabuleiro no)))
+         (arcos-vert (get-arcos-verticais (no-tabuleiro no)))
          (l-maximo (max (length arcos-hor) (length arcos-vert)))
          (i-maximo (max (length (car arcos-hor)) (length (car arcos-vert)))))
     (labels ((iterar-tabuleiro (l i)

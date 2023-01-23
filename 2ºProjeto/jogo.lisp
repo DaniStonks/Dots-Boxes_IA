@@ -8,86 +8,52 @@
 (defun iniciar ()
   "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial, do algoritmo, a heuristica e a profundidade se utilizadas"
   (let* ((carregamentoFicheiros (carregar-ficheiros (ler-diretoria)))
-         (tabuleiro (tabuleiro-inicial))
-         (tempo-computador (ler-tempo))
-         (no-solucao (cond
-                      ((equal algoritmo 'bfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) num-solucao *abertos* *fechados*))
-                      ((equal algoritmo 'dfs) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) profundidade num-solucao *abertos* *fechados*))
-                      ((equal algoritmo 'a*) (funcall algoritmo no 'no-solucaop 'sucessores (operadores) heuristica num-solucao *abertos* *fechados*))))
-         (tempo-execucao (obter-tempo-execucao-em-segundos tempo-execucao-inicial (get-internal-real-time))))
-    (mostrar-solucao no-solucao tempo-execucao)
-    (escrever-no-log no-solucao algoritmo heuristica tempo-execucao diretoria)))
+         (estado-inicial (tabuleiro-inicial))
+         (modo-jogo (ler-modo-jogo))
+         (profundidade-limite (ler-profundidade)))
+    (cond ((equal modo-jogo 'jogo-pessoa-vs-pc) (funcall modo-jogo estado-inicial (ler-jogador-inicial) profundidade-limite))
+          (t jogo-pc-vs-pc))))
 
 (defun carregar-ficheiros (diretoria)
   (progn
     (load (concatenate 'string diretoria "\\puzzle.lisp"))
-    (load (concatenate 'string diretoria "\\algoritmo.lisp"))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;
-;; Funções auxiliares ;;
-;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;Teste: (colocar-arco (3 1 'ARCO-HORIZONTAL) (tabuleiro-teste))
-;;Resultado: (estado novo)
-(defun colocar-arco (jogada estado)
-  (let* ((novo-estado (funcall (third jogada) (first jogada) (second jogada) (no-estado estado)))
-         (novas-caixas (let ((num-caixas (- (contar-caixas-n-lados novo-estado 4) (first (no-caixas estado)) (second (no-caixas estado)))))
-                         (cond ((/= num-caixas 0) (list (+ num-caixas (first (no-caixas estado))) (second (no-caixas estado))))
-                               (t (no-caixas estado))))))
-    (list jogada (list novo-estado novas-caixas))))
-
-(defun trocar-jogador (jogador)
-  (cond ((= jogador 1) 2)
-        (t 1)))
-
-(defun obter-tempo-em-segundos (tempo-inicial tempo-final)
-  (float (/ (- tempo-final tempo-inicial) 1000)))
-
-(defun obter-melhor-jogada (estado &optional (profundidade 0) (tempo 0))
-  (let* ((sucessores (filtrar-nos-filhos (sucessores estado (operadores) 2)))
-         (alfabeta-lista (mapcar (lambda (filho)
-                                   (setf *alfa* -10000000)
-                                   (setf *beta* 10000000)
-                                   (alfabeta filho (operadores) 'sucessores 'avaliacao 1 1))
-                                 sucessores))
-         (melhor-jogada-indice (obter-indice-elemento alfabeta-lista (apply 'max alfabeta-lista))))
-    (nth melhor-jogada-indice sucessores)))
-
-(defun obter-indice-elemento(lista elemento)
-  (cond ((null lista) NIL)
-        ((eq (car lista) elemento) 0)
-        (t (1+ (obter-indice-elemento (cdr lista) elemento)))))
+    (load (concatenate 'string diretoria "\\algoritmo.lisp"))
+    (format t "~%")))
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; Funções de jogo ;;
 ;;;;;;;;;;;;;;;;;;;;;
 
-;(jogo (tabuleiro-inicial) 1)
-(defun jogo (estado jogador)
+(defun jogo-pessoa-vs-pc (estado jogador profundidade)
   (progn
     (imprime-tabuleiro estado)
     (let* ((nova-jogada (cond ((= jogador 1) (jogar-humano estado))
-                              (t (jogar estado 2))))
+                              (t (jogar estado profundidade))))
            (novo-estado (second nova-jogada)))
-      (cond ((tabuleiro-preenchidop (no-estado novo-estado)) (vencedor (no-caixas novo-estado)))
-            (t (cond ((jogada-caixa-fechadap estado (no-estado novo-estado)) (jogo novo-estado jogador))
-                     (t (jogo novo-estado (trocar-jogador jogador)))))))))
+      (cond ((not (jogada-validap novo-estado)) (progn
+                                                  (format t "Jogada invalida~%")
+                                                  (jogo-pessoa-vs-pc novo-estado jogador profundidade)))
+            ((tabuleiro-preenchidop (no-tabuleiro novo-estado)) (vencedor (no-caixas novo-estado)))
+            (t (cond ((jogada-caixa-fechadap estado (no-tabuleiro novo-estado)) (jogo-pessoa-vs-pc novo-estado jogador profundidade))
+                     (t (jogo-pessoa-vs-pc novo-estado (trocar-jogador jogador) profundidade))))))))
+;;Imprimir
+
+(defun jogo-pc-vs-pc ()
+  "Não implementado")
 
 (defun jogar-humano (estado)
   (let ((jogada (ler-jogada)))
     (colocar-arco jogada estado)))
         
-;(jogar (tabuleiro-teste) 2)
-(defun jogar (estado &optional (profundidade 0) (tempo 0)) ;;apenas utilizada pelo computador, nunca pelo humano
-  "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial, do algoritmo, a heuristica e a profundidade se utilizadas"
-  (let* ((melhor-jogada (obter-melhor-jogada estado profundidade tempo))
+(defun jogar (estado &optional (profundidade 0)) ;;apenas utilizada pelo computador, nunca pelo humano
+  "Irá encontrar a melhor jogada possivel para o Computador e devolve o novo estado e a jogada efetuada"
+  (let* ((melhor-jogada (obter-melhor-jogada estado profundidade))
          (jogada-efetuada (obter-jogada-atraves-estado-final estado melhor-jogada 2)))
     (list jogada-efetuada melhor-jogada)))
 
 ;;;;;;;;;;;;;
 ;; Leitura ;;
-;;;;;;;;;;;;;
-
+;;;;;;;;;;;;;     
 (defun ler-diretoria()
 "Permite fazer a leitura da diretoria do programa"
     (progn
@@ -105,7 +71,7 @@
               (t (* resposta 1000))))))
 
 (defun ler-profundidade()
-"Permite fazer a leitura da profundidade limite para o algoritmo dfs."
+"Permite fazer a leitura da profundidade limite para o algoritmo alfabeta"
     (progn
       (format t "Qual a profundidade limite? ~%")
       (read)))
@@ -130,6 +96,24 @@
       (format t "Em que ~A inserir o arco? ~%" eixo)
       (read)))
 
+(defun ler-jogador-inicial ()
+  (progn
+    (format t "Qual o jogador a jogar primeiro? ~%")
+    (format t "1 - Pessoa ~%")
+    (format t "2 - Computador ~%")
+    (let ((resposta (read)))
+      (cond ((= resposta 1) 1)
+            (t 2)))))
+
+(defun ler-modo-jogo ()
+  (progn
+    (format t "Qual o modo de jogo? ~%")
+    (format t "1 - Pessoa vs Computador ~%")
+    (format t "2 - Computador vs Computador (Não implementado) ~%")
+    (let ((resposta (read)))
+      (cond ((= resposta 1) 'jogo-pessoa-vs-pc)
+            (t 'jogo-pc-vs-pc)))))
+
 ;;;;;;;;;;;;;
 ;; Escrita ;;
 ;;;;;;;;;;;;;
@@ -137,43 +121,71 @@
 ;;(imprime-tabuleiro (tabuleiro-inicial))
 (defun imprime-tabuleiro (tabuleiro)
   (progn
-    (format t "~A ~%" (get-arcos-horizontais (no-estado tabuleiro)))
-    (format t "~A ~%~%~%" (get-arcos-verticais (no-estado tabuleiro)))))
+    (format t "~A ~%" (get-arcos-horizontais (no-tabuleiro tabuleiro)))
+    (format t "~A ~%~%" (get-arcos-verticais (no-tabuleiro tabuleiro)))))
 
+(defun imprimir-jogada (diretoria jogada jogador)
+  (let ((jogada-realizada (car jogada))
+        (jogada-estado (car (cdr jogada))))
+      (progn
+        (format t "Linha - ~A; Coluna - ~A; Operação - ~A ~%" (first jogada-realizada) (second jogada-realizada) (third jogada-realizada))
+        (format t "Estado atual: ~A ~%" (no-tabuleiro no-solucao))
+        (cond ((= jogador 2)
+               (format t "Número de nós analisados: ~A ~%" (get-nos-analisados))
+               (format t "Número de cortes alfa: ~A ~%" nos-gerados nos-expandidos)
+               (format t "Número de cortes beta: ~A ~%" nos-gerados nos-expandidos)
+               (format t "~%"))))))
+        
 ;;o programa deverá escrever num ficheiro log.dat e no ecrã qual a jogada realizada, o novo estado, o número de nós analisados, o número de cortes efetuados (de cada tipo) e o tempo gasto.
-(defun imprimir-jogada (diretoria jogada num-nos num-cortes tempo)
+(defun escrever-no-log (diretoria jogada jogador)
   "Permite escrever no final do ficheiro log.dat as seguintes informações do problema, o estado inicial, a solução encontrada, o número de nós gerados e o número de nós expandidos"
   (with-open-file (stream (concatenate 'string diretoria "\\log.dat")
                          :direction :output
                          :if-exists :append
                          :if-does-not-exist :create)
-    (let ((nos-gerados (+ (length *abertos*)(length *fechados*)))
-          (nos-expandidos (length *fechados*)))
+    (let ((jogada-realizada (car jogada))
+          (jogada-estado (car (cdr jogada))))
       (progn
-        (format stream "Algoritmo utilizado - ~A, ~@[~A~] ~%" algoritmo heuristica)
-        (format stream "Solução encontrada: ~A ~%" (no-estado no-solucao))
-        (format stream "Estado inicial: ~A ~%" (estado-no-inicial no-solucao))
-        (format stream "Número de nós gerados: ~A | Número de nós expandidos: ~A ~%" nos-gerados nos-expandidos)
-        (format stream "Penetrância: ~A | Factor de ramificação medio: ~A | Tempo de execução: ~A ~%" (penetrancia (no-profundidade no-solucao) nos-gerados) (bisseccao 'f-fator-ramificacao 0 10 no-solucao) tempo-execucao)
-        (format stream "Caminho ~%")
-        (escreve-lista-nos no-solucao stream)
-        (format stream "~% ~% ~%")))))
+        (format stream "Linha - ~A; Coluna - ~A; Operação - ~A ~%" (first jogada-realizada) (second jogada-realizada) (third jogada-realizada))
+        (format stream "Estado atual: ~A ~%" (no-tabuleiro no-solucao))
+        (cond ((= jogador 2)
+               (format stream "Número de nós analisados: ~A ~%" (get-nos-analisados))
+               (format stream "Número de cortes alfa: ~A ~%" nos-gerados nos-expandidos)
+               (format stream "Número de cortes beta: ~A ~%" nos-gerados nos-expandidos)
+               (format stream "~%")))))))
 
-;;o programa deverá escrever num ficheiro log.dat e no ecrã qual a jogada realizada, o novo estado, o número de nós analisados, o número de cortes efetuados (de cada tipo) e o tempo gasto.
-(defun escrever-no-log (diretoria jogada num-nos num-cortes tempo)
-  "Permite escrever no final do ficheiro log.dat as seguintes informações do problema, o estado inicial, a solução encontrada, o número de nós gerados e o número de nós expandidos"
-  (with-open-file (stream (concatenate 'string diretoria "\\log.dat")
-                         :direction :output
-                         :if-exists :append
-                         :if-does-not-exist :create)
-    (let ((nos-gerados (+ (length *abertos*)(length *fechados*)))
-          (nos-expandidos (length *fechados*)))
-      (progn
-        (format stream "Algoritmo utilizado - ~A, ~@[~A~] ~%" algoritmo heuristica)
-        (format stream "Solução encontrada: ~A ~%" (no-estado no-solucao))
-        (format stream "Estado inicial: ~A ~%" (estado-no-inicial no-solucao))
-        (format stream "Número de nós gerados: ~A | Número de nós expandidos: ~A ~%" nos-gerados nos-expandidos)
-        (format stream "Penetrância: ~A | Factor de ramificação medio: ~A | Tempo de execução: ~A ~%" (penetrancia (no-profundidade no-solucao) nos-gerados) (bisseccao 'f-fator-ramificacao 0 10 no-solucao) tempo-execucao)
-        (format stream "Caminho ~%")
-        (escreve-lista-nos no-solucao stream)
-        (format stream "~% ~% ~%")))))
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; Funções auxiliares ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+(defun colocar-arco (jogada estado)
+  (let* ((novo-estado (funcall (third jogada) (first jogada) (second jogada) (no-tabuleiro estado)))
+         (novas-caixas (let ((num-caixas (- (contar-caixas-n-lados novo-estado 4) (first (no-caixas estado)) (second (no-caixas estado)))))
+                         (cond ((/= num-caixas 0) (list (+ num-caixas (first (no-caixas estado))) (second (no-caixas estado))))
+                               (t (no-caixas estado))))))
+    (list jogada (list novo-estado novas-caixas))))
+
+(defun jogada-validap (jogada-estado)
+  (cond ((null (no-tabuleiro jogada-estado)) NIL)
+        (t T)))
+
+(defun trocar-jogador (jogador)
+  (cond ((= jogador 1) 2)
+        (t 1)))
+
+(defun obter-melhor-jogada (estado &optional (profundidade 0))
+  (let* ((sucessores (filtrar-nos-filhos (sucessores estado (operadores) 2)))
+         (estatisticas (reset-estatisticas))
+         (alfabeta-lista (mapcar (lambda (filho)
+                                   (reset-alfa-beta)
+                                   (alfabeta filho (operadores) 'sucessores 'avaliacao 1 1))
+                                 sucessores))
+         (melhor-jogada-indice (obter-indice-elemento alfabeta-lista (apply 'max alfabeta-lista))))
+    (nth melhor-jogada-indice sucessores)))
+
+(defun obter-indice-elemento(lista elemento)
+  (cond ((null lista) NIL)
+        ((eq (car lista) elemento) 0)
+        (t (1+ (obter-indice-elemento (cdr lista) elemento)))))
+
+(defun obter-tempo-em-segundos (tempo-inicial tempo-final)
+  (float (/ (- tempo-final tempo-inicial) 1000)))
