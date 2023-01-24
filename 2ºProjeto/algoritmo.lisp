@@ -53,7 +53,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Teste: (alfabeta (tabuleiro-teste) (operadores) 'sucessores 'avaliacao 2 2)
 ;;Resultado: 5
-(defun alfabeta (no operadores sucessores avaliacao profundidade jogador)
+(defun alfabeta2 (no operadores sucessores avaliacao profundidade jogador)
   (labels ((maximizar (nos &optional (valor -10000000))
              (cond ((null nos) valor)
                    (t (let ((temp-valor (max valor (alfabeta (car nos) operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador))))
@@ -74,3 +74,28 @@
           (t (let ((nos-filhos (filtrar-nos-filhos (sucessores no operadores jogador))))
                (cond ((= jogador 2) (maximizar nos-filhos))
                      (t (minimizar nos-filhos))))))))
+
+
+;;Teste: (alfabeta (tabuleiro-teste) -99999 99999 (operadores) 'sucessores 'avaliacao 2 2)
+;;Resultado: 5
+(defun alfabeta (no alfa beta operadores sucessores avaliacao profundidade jogador)
+  (labels ((maximizar (nos alf bet &optional (valor -10000000))
+             (cond ((null nos) valor)
+                   (t (let* ((temp-valor (max valor (alfabeta (car nos) alf bet operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador))))
+                             (nos-analisados (inc-nos-analisados))
+                             (temp-alfa (max temp-valor alfa)))
+                        (cond ((>= temp-alfa beta) (let ((cortes-beta (inc-cortes-beta)))
+                                                     beta))
+                              (t (maximizar (cdr nos) temp-alfa bet temp-valor)))))))
+           (minimizar (nos alf bet &optional (valor 10000000))
+             (cond ((null nos) valor)
+                   (t (let* ((temp-valor (min valor (alfabeta (car nos) alf bet operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador))))
+                             (nos-analisados (inc-nos-analisados))
+                             (temp-beta (min temp-valor beta)))
+                        (cond ((<= temp-beta alfa) (let ((cortes-alfa (inc-cortes-alfa)))
+                                                    temp-valor))
+                              (t (minimizar (cdr nos) alf temp-beta temp-valor))))))))
+    (cond ((or (= 0 profundidade) (tabuleiro-preenchidop (no-tabuleiro no))) (avaliacao no))
+          (t (let ((nos-filhos (filtrar-nos-filhos (sucessores no operadores jogador))))
+               (cond ((= jogador 2) (maximizar nos-filhos alfa beta))
+                     (t (minimizar nos-filhos alfa beta))))))))
