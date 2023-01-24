@@ -32,15 +32,14 @@
                               (t (jogar estado profundidade))))
            (novo-estado (second nova-jogada)))
       (cond ((not (jogada-validap novo-estado)) (progn
-                                                  (format t "Jogada invalida~%")
-                                                  (jogo-pessoa-vs-pc novo-estado jogador profundidade)))
+                                                  (format t "Jogada invalida~%~%")
+                                                  (jogo-pessoa-vs-pc diretoria estado jogador profundidade)))
             (t (let* ((escrever-ecra (imprimir-jogada diretoria nova-jogada jogador))
                       (escrever-ficheiro (escrever-no-log diretoria nova-jogada jogador)))
                  (cond ((tabuleiro-preenchidop (no-tabuleiro novo-estado)) (vencedor (no-caixas novo-estado)))
                        ((jogada-caixa-fechadap estado (no-tabuleiro novo-estado)) (jogo-pessoa-vs-pc diretoria novo-estado jogador profundidade))
                        (t (jogo-pessoa-vs-pc diretoria novo-estado (trocar-jogador jogador) profundidade)))))))))
-;escrever-no-log (diretoria jogada jogador)
-;imprimir-jogada (diretoria jogada jogador)
+
 (defun jogo-pc-vs-pc ()
   "Não implementado")
 
@@ -121,8 +120,8 @@
 ;; Escrita ;;
 ;;;;;;;;;;;;;
 
-;;(imprime-tabuleiro (tabuleiro-inicial))
-(defun imprime-tabuleiro (tabuleiro)
+;;(imprime-tabuleiro (tabuleiro-teste))
+(defun imprime-tabuleiro2 (tabuleiro)
   (progn
     (format t "~A ~%" (get-arcos-horizontais (no-tabuleiro tabuleiro)))
     (format t "~A ~%~%" (get-arcos-verticais (no-tabuleiro tabuleiro)))))
@@ -149,8 +148,8 @@
     (let* ((jogada-realizada (car jogada))
           (jogada-estado (cdr jogada)))
       (progn
-        (cond ((= jogador 1) (format stream "Jogador 1")
-               (t "Jogador 2")))
+        (cond ((= jogador 1) (format stream "Jogador 1~%"))
+              (t (format stream"Jogador 2~%")))
         (format stream "Linha - ~A; Coluna - ~A; Operação - ~A ~%" (first jogada-realizada) (second jogada-realizada) (third jogada-realizada))
         (format stream "Estado atual: ~A ~%" (no-tabuleiro jogada-estado))
         (cond ((= jogador 2)
@@ -181,8 +180,7 @@
   (let* ((sucessores (filtrar-nos-filhos (sucessores estado (operadores) 2)))
          (estatisticas (reset-estatisticas))
          (alfabeta-lista (mapcar (lambda (filho)
-                                   (reset-alfa-beta)
-                                   (alfabeta filho (operadores) 'sucessores 'avaliacao 1 1))
+                                   (alfabeta filho -99999 99999 (operadores) 'sucessores 'avaliacao (1- profundidade) 1))
                                  sucessores))
          (melhor-jogada-indice (obter-indice-elemento alfabeta-lista (apply 'max alfabeta-lista))))
     (nth melhor-jogada-indice sucessores)))

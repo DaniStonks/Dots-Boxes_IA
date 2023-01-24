@@ -2,13 +2,9 @@
 ;;;; Funcoes especificas ao dominio do jogo Dots and Boxes
 ;;;; Autor: Daniel Baptista, Rafael Silva
 
-
-;;; Tabuleiro
-  "Cria um não do problema com um tabuleiro e opcionalmente profundidade, valor heuristico e nÃ³ pai"
-(defun cria-no (tabuleiro &optional (g 0) (h 0) (pai nil))
-  (list tabuleiro g h pai)
-)
-
+;;;;;;;;;;;;;;;;;;
+;;; Tabuleiros ;;;
+;;;;;;;;;;;;;;;;;;
 (defun tabuleiro-inicial ()
   "Retorna um tabuleiro 5x6 (5 caixas na vertical por 6 caixas na horizontal)"
   '((
@@ -16,48 +12,12 @@
     ((0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))
     ) (0 0)))
 
-(defun teste2 ()
-  "Retorna um tabuleiro 5x6 (5 caixas na vertical por 6 caixas na horizontal)"
-  '((
-    ((1 1 2 1 2 2) (1 2 2 1 1 1) (1 2 2 2 2 2) (2 2 1 2 2 2) (2 2 1 2 2 2) (2 2 1 2 2 0)) 
-    ((2 2 2 2 2) (2 1 1 1 1) (1 2 2 2 2) (2 2 1 1 1) (2 1 1 2 1) (2 2 1 1 1) (2 2 0 0 0)) 
-    ) (0 0)))
-
 (defun tabuleiro-teste ()
-  "Retorna um tabuleiro 5x6 (5 caixas na vertical por 6 caixas na horizontal)"
+  "Retorna um tabuleiro 3x3 usado para testes"
   '((
     ((1 0) (0 0) (0 0))
     ((1 0) (1 0) (0 0))
     ) (0 0)))
-
-;;Funcoes Auxiliares
-(defun substituir (indice lista &optional (x 1))
-  "Dada uma lista e um indice, substitui o valor nessa posicao por outro passado por argumento"
-  (cond ((null lista) nil)
-        ((= (1- indice) 0) (cons x (substituir (1- indice) (cdr lista) x)))
-        (t (cons (car lista) (substituir (1- indice) (cdr lista) x)))))
-
-(defun arco-na-posicao (pos-lista-arcos pos-arco lista-arcos &optional (x 1))
-  "Insere um arco nos arcos horizontais ou verticais de um tabuleiro, na posicao escolhida"
-  (cond ((= (1- pos-lista-arcos) 0) (cons (substituir pos-arco (car lista-arcos) x) (cdr lista-arcos)))
-        (t (cons (car lista-arcos) (arco-na-posicao (1- pos-lista-arcos) pos-arco (cdr lista-arcos) x)))))
-
-;;Teste:(tabuleiro-preenchidop (no-tabuleiro (tabuleiro-teste)))
-;;Resultado: NIL
-(defun tabuleiro-preenchidop (estado)
-  (let* ((arcos-hor (get-arcos-horizontais estado))
-         (arcos-vert (get-arcos-verticais estado))
-         (num-arcos-hor (length arcos-hor))
-         (num-arcos-vert (length arcos-vert))
-         (indice-a-usar (max num-arcos-hor num-arcos-vert)))
-    (labels ((ver-tabuleiro (l c)
-               (cond ((> l indice-a-usar) T)
-                     (t (let ((valor-arco-hor (get-arco-na-posicao l c arcos-hor))
-                              (valor-arco-vert (get-arco-na-posicao l c arcos-vert)))
-                          (cond ((or (eq valor-arco-hor 0)(eq valor-arco-vert 0)) NIL)
-                                ((= c indice-a-usar) (ver-tabuleiro (1+ l) 1))
-                                (t (ver-tabuleiro l (1+ c)))))))))
-      (ver-tabuleiro 1 1))))
 
 ;;;;;;;;;;;;;;;;;;
 ;;; Selectores ;;;
@@ -105,9 +65,9 @@
           ((/= 0 (get-arco-na-posicao pos-lista-arcos pos-arco arcos-ver)) NIL)
           (t (cons (car tabuleiro-estado) (cons (arco-na-posicao pos-lista-arcos pos-arco arcos-ver x) nil))))))
 
-;;;;;;;;;;;;;;;;;;;
-;;; Heuristicas ;;;
-;;;;;;;;;;;;;;;;:;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Função avaliação ;;;
+;;;;;;;;;;;;;;;;:;;;;;;;
 ;;Função de avaliação
 ;;+10 por cada caixa do MAX(Computador)
 ;;-10 por cada caixa do MIN(Adversario)
@@ -116,11 +76,73 @@
 (defun avaliacao (no)
   (+ (* 5 (contar-caixas-n-lados (no-tabuleiro no) 3)) (* -5 (contar-caixas-n-lados (no-tabuleiro no) 2)) (* 10 (second (no-caixas no))) (* -10 (first (no-caixas no)))))
 
-(defun avaliacao-teste (no jogador)
-  (cond ((= jogador 1) (* 10 (- (car (second no)) (second (second no)))))
-        (t (* 10 (- (second (second no)) (car (second no)))))
-        )
-  )
+;;;;;;;;;;;;;;;;;;
+;;; Sucessores ;;;
+;;;;;;;;;;;;;;;;;;
+(defun novo-sucessor (no l i operador jogador)
+  (let* ((novo-estado (funcall operador l i (no-tabuleiro no) jogador))     
+         (novas-caixas (let ((caixas (jogada-caixa-fechadas no novo-estado)))
+                         (cond ((/= caixas 0) (cond ((= jogador 1) (list (+ caixas (first (no-caixas no))) (second (no-caixas no))))
+                                                    (t (list (first (no-caixas no)) (+ caixas (second (no-caixas no)))))))
+                               (t (no-caixas no))))))
+    (list novo-estado novas-caixas)))
+
+;;(sucessores (tabuleiro-teste) (operadores) 2)
+(defun sucessores (no operadores jogador)
+  (let* ((arcos-hor (get-arcos-horizontais (no-tabuleiro no)))
+         (arcos-vert (get-arcos-verticais (no-tabuleiro no)))
+         (l-maximo (max (length arcos-hor) (length arcos-vert)))
+         (i-maximo (max (length (car arcos-hor)) (length (car arcos-vert)))))
+    (labels ((iterar-tabuleiro (l i)
+               (cond ((> l l-maximo) NIL)
+                     ((> i i-maximo) (iterar-tabuleiro (1+ l) 1))
+                     (t (append (mapcar (lambda (op) (novo-sucessor no l i op jogador)) operadores) (iterar-tabuleiro l (1+ i)))))))
+      (iterar-tabuleiro 1 1))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; Funções auxiliares ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+(defun substituir (indice lista &optional (x 1))
+  "Dada uma lista e um indice, substitui o valor nessa posicao por outro passado por argumento"
+  (cond ((null lista) nil)
+        ((= (1- indice) 0) (cons x (substituir (1- indice) (cdr lista) x)))
+        (t (cons (car lista) (substituir (1- indice) (cdr lista) x)))))
+
+(defun arco-na-posicao (pos-lista-arcos pos-arco lista-arcos &optional (x 1))
+  "Insere um arco nos arcos horizontais ou verticais de um tabuleiro, na posicao escolhida"
+  (cond ((= (1- pos-lista-arcos) 0) (cons (substituir pos-arco (car lista-arcos) x) (cdr lista-arcos)))
+        (t (cons (car lista-arcos) (arco-na-posicao (1- pos-lista-arcos) pos-arco (cdr lista-arcos) x)))))
+
+;;Teste:(tabuleiro-preenchidop (no-tabuleiro (tabuleiro-teste)))
+;;Resultado: NIL
+(defun tabuleiro-preenchidop (estado)
+  (let* ((arcos-hor (get-arcos-horizontais estado))
+         (arcos-vert (get-arcos-verticais estado))
+         (num-arcos-hor (length arcos-hor))
+         (num-arcos-vert (length arcos-vert))
+         (indice-a-usar (max num-arcos-hor num-arcos-vert)))
+    (labels ((ver-tabuleiro (l c)
+               (cond ((> l indice-a-usar) T)
+                     (t (let ((valor-arco-hor (get-arco-na-posicao l c arcos-hor))
+                              (valor-arco-vert (get-arco-na-posicao l c arcos-vert)))
+                          (cond ((or (eq valor-arco-hor 0)(eq valor-arco-vert 0)) NIL)
+                                ((= c indice-a-usar) (ver-tabuleiro (1+ l) 1))
+                                (t (ver-tabuleiro l (1+ c)))))))))
+      (ver-tabuleiro 1 1))))
+
+(defun obter-jogada-atraves-estado-final (estado-inicial estado-final jogador)
+  (let* ((arcos-hor (get-arcos-horizontais (no-tabuleiro estado-inicial)))
+         (arcos-vert (get-arcos-verticais (no-tabuleiro estado-inicial)))
+         (l-maximo (max (length arcos-hor) (length arcos-vert)))
+         (i-maximo (max (length (car arcos-hor)) (length (car arcos-vert)))))
+    (labels ((iterar-tabuleiro (l i)
+               (let ((jogadas (mapcar (lambda (op) (novo-sucessor estado-inicial l i op jogador)) (operadores))))
+                 (cond ((equal estado-final (first jogadas)) (list l i 'arco-horizontal))
+                       ((equal estado-final (second jogadas)) (list l i 'arco-vertical))
+                       ((> l l-maximo) NIL)
+                       ((> i i-maximo) (iterar-tabuleiro (1+ l) 1))
+                       (t (iterar-tabuleiro l (1+ i)))))))
+      (iterar-tabuleiro 1 1))))
 
 (defun vencedor (caixas)
   (cond ((> (first caixas) (second caixas)) "Jogador 1")
@@ -169,40 +191,3 @@
         (num-caixas-novo (contar-caixas-n-lados estado-novo 4)))
     (cond ((/= num-caixas-antigo num-caixas-novo) (- num-caixas-novo num-caixas-antigo))
           (t 0))))
-
-;;;;;;;;;;;;;;;;;;
-;;; Sucessores ;;;
-;;;;;;;;;;;;;;;;;;
-(defun novo-sucessor (no l i operador jogador)
-  (let* ((novo-estado (funcall operador l i (no-tabuleiro no) jogador))     
-         (novas-caixas (let ((caixas (jogada-caixa-fechadas no novo-estado)))
-                         (cond ((/= caixas 0) (cond ((= jogador 1) (list (+ caixas (first (no-caixas no))) (second (no-caixas no))))
-                                                    (t (list (first (no-caixas no)) (+ caixas (second (no-caixas no)))))))
-                               (t (no-caixas no))))))
-    (list novo-estado novas-caixas)))
-
-(defun obter-jogada-atraves-estado-final (estado-inicial estado-final jogador)
-  (let* ((arcos-hor (get-arcos-horizontais (no-tabuleiro estado-inicial)))
-         (arcos-vert (get-arcos-verticais (no-tabuleiro estado-inicial)))
-         (l-maximo (max (length arcos-hor) (length arcos-vert)))
-         (i-maximo (max (length (car arcos-hor)) (length (car arcos-vert)))))
-    (labels ((iterar-tabuleiro (l i)
-               (let ((jogadas (mapcar (lambda (op) (novo-sucessor estado-inicial l i op jogador)) (operadores))))
-                 (cond ((equal estado-final (first jogadas)) (list l i 'arco-horizontal))
-                       ((equal estado-final (second jogadas)) (list l i 'arco-vertical))
-                       ((> l l-maximo) NIL)
-                       ((> i i-maximo) (iterar-tabuleiro (1+ l) 1))
-                       (t (iterar-tabuleiro l (1+ i)))))))
-      (iterar-tabuleiro 1 1))))
-
-;;(sucessores (tabuleiro-teste) (operadores) 2)
-(defun sucessores (no operadores jogador)
-  (let* ((arcos-hor (get-arcos-horizontais (no-tabuleiro no)))
-         (arcos-vert (get-arcos-verticais (no-tabuleiro no)))
-         (l-maximo (max (length arcos-hor) (length arcos-vert)))
-         (i-maximo (max (length (car arcos-hor)) (length (car arcos-vert)))))
-    (labels ((iterar-tabuleiro (l i)
-               (cond ((> l l-maximo) NIL)
-                     ((> i i-maximo) (iterar-tabuleiro (1+ l) 1))
-                     (t (append (mapcar (lambda (op) (novo-sucessor no l i op jogador)) operadores) (iterar-tabuleiro l (1+ i)))))))
-      (iterar-tabuleiro 1 1))))

@@ -1,11 +1,50 @@
+Jogador 1
 Linha - 1; Coluna - 1; Operação - ARCO-HORIZONTAL 
 Estado atual: ((((1 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
 
 
+Linha - 1; Coluna - 2; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((1 2 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 0 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 1; Coluna - 1; Operação - ARCO-VERTICAL 
+Estado atual: ((((1 2 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((1 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Linha - 2; Coluna - 1; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((1 2 0 0 0 0) (2 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((1 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 0 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 1; Coluna - 1; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((1 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
 Linha - 1; Coluna - 1; Operação - ARCO-VERTICAL 
 Estado atual: ((((1 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((2 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
-Número de nós analisados: 72 
-Número de cortes alfa: 70 
+Número de nós analisados: 4830 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 2; Coluna - 3; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((1 0 0 0 0 0) (0 0 1 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((2 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
+Linha - 1; Coluna - 2; Operação - ARCO-VERTICAL 
+Estado atual: ((((1 0 0 0 0 0) (0 0 1 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((2 2 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 4556 
+Número de cortes alfa: 0 
 Número de cortes beta: 0 
 
 
