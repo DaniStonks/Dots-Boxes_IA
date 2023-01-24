@@ -41,7 +41,7 @@
 * **Arco** - É a ligação entre dois pontos adjacentes
   * No total no tabuleiro existem $(m *(n + 1)) + (n* (m + 1))$ arcos.
 * **Profundidade** - É o nível em que se encontra um determinado nó.
-* **Heurística** - É o processo de ajuda à procura de soluções usando conhecimento prévio.
+* **Função de utilidade** - É o processo de procura da melhor jogada através de conhecimento prévio.
 
 ## 2. Introdução
 
@@ -49,7 +49,7 @@ No âmbito da cadeira de Inteligência Artificial foi realizado um projeto em **
 
 O jogo consiste num jogo entre 2 jogadores, não-cooperativo, é um jogo sequencial de soma zero, em que tem como objetivo final obter o número máximo de caixas fechadas no tabuleiro de jogo.
 
-Nesta 1ª fase do projeto foi apenas pedido uma implementação parcial deste jogo, em que invés de ser 2 jogadores a jogar, é apenas 1, o próprio computador. Desta forma, o objetivo do jogo nesta fase torna-se em escolher um problema e o algoritmo de procura desejado, e tentar arranjar uma solução para o número de caixas fechadas do problema dado.
+Nesta 2ª fase do projeto foi pedido para fazer a implementação do jogo completo em que poderá ser jogado entre 1 pessoa e o computador ou então entre 2 computadores. Desta forma o objetivo torna-se para que o computador vença o jogador humano ou outro computador.
 
 ## 3. Instalação e utilização
 
@@ -61,15 +61,28 @@ Para utilizar o programa é necessária realizar os seguintes passos:
 
 **3.** De seguida abrir o ficheiro projeto.lisp no LispWorks através do atalho no canto superior esquerdo "Open file" com o icon seguinte <img src="Open_file_icon.jpg" width="20" height="20">
 
-**4.** Com o botão direito do rato na janela do Editor, selecionar a opção "Buffer" e de seguida a opção "Evaluate".
+**4.** Com o botão direito do rato na janela do Editor, selecionar a opção _Buffer_ e de seguida a opção _Evaluate_.
 
 **5.** Depois executar a função iniciar no listener do LispWorks desta forma: ```(iniciar)```
 
 **6.** Escolher a diretoria onde estão os ficheiros da aplicação. Exemplo: ```"C:\Users\username\Docs\Dots-Boxes_IA"```
 
-**7.** Selecionar um dos problemas que pretende resolver.
+**7.** Escolher o modo de jogo que queira fazer entre as 2 opções disponibilizadas:
 
-**8.** Escolher com que algoritmo quer resolver o problema escolhido.
+* Computador vs Humano
+* Computador vs Computador
+
+**8.** Escolher a profundidade limite que irá ser percorrido o algoritmo.
+
+**9.** Escolher qual o jogador que joga primeiro, isto se a escolha do modo de jogo seja a 1ª opção, entre 2 opções:
+
+* Computador
+* Humano
+
+**10.** Por fim é escolher qual o tipo de arco que irá querer colocar entre:
+
+* **Arco Horizontal**
+* **Arco Vertical**
 
 ## 4. Input/Output  
 
@@ -109,7 +122,7 @@ Para utilizar o programa é necessária realizar os seguintes passos:
 
 <center>
   <figure>
-    <img src="Inicialização_programa.png">
+    <img src="">
        <figcaption> Ecrã Inicial </figcaption>
   </figure>
 </center>
@@ -118,7 +131,7 @@ Para utilizar o programa é necessária realizar os seguintes passos:
 
 <center>
   <figure>
-    <img src="Inserir_diretoria.png">
+    <img src="">
        <figcaption> Ecrã de Escolha de diretoria </figcaption>
   </figure>
 </center>
@@ -127,7 +140,7 @@ Para utilizar o programa é necessária realizar os seguintes passos:
 
 <center>
   <figure>
-    <img src="Escolha_problema_para_resolver.png">
+    <img src="">
        <figcaption> Ecrã de Escolha do problema a resolver </figcaption>
   </figure>
 </center>
@@ -136,7 +149,7 @@ Para utilizar o programa é necessária realizar os seguintes passos:
 
 <center>
   <figure>
-    <img src="Escolha_algoritmo_pesquisa.png">
+    <img src="">
        <figcaption> Ecrã de Escolha do algoritmo de pesquisa </figcaption>
   </figure>
 </center>
@@ -145,7 +158,7 @@ Para utilizar o programa é necessária realizar os seguintes passos:
 
 <center>
   <figure>
-    <img src="Output.png">
+    <img src="">
        <figcaption> Ecrã de Estatisticas de resolução do problema </figcaption>
   </figure>
 </center>
