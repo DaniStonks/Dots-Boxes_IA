@@ -121,7 +121,7 @@
 ;;;;;;;;;;;;;
 
 ;;(imprime-tabuleiro (tabuleiro-teste))
-(defun imprime-tabuleiro (tabuleiro)
+(defun imprime-tabuleiro2 (tabuleiro)
   (progn
     (format t "~A ~%" (get-arcos-horizontais (no-tabuleiro tabuleiro)))
     (format t "~A ~%~%" (get-arcos-verticais (no-tabuleiro tabuleiro)))))
