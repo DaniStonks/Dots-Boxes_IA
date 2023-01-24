@@ -7,11 +7,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun iniciar ()
   "Permite iniciar o programa, fazendo a leitura do teclado do estado inicial, do algoritmo, a heuristica e a profundidade se utilizadas"
-  (let* ((carregamentoFicheiros (carregar-ficheiros (ler-diretoria)))
+  (let* ((diretoria (ler-diretoria))
+         (carregamentoFicheiros (carregar-ficheiros diretoria))
          (estado-inicial (tabuleiro-inicial))
          (modo-jogo (ler-modo-jogo))
          (profundidade-limite (ler-profundidade)))
-    (cond ((equal modo-jogo 'jogo-pessoa-vs-pc) (funcall modo-jogo estado-inicial (ler-jogador-inicial) profundidade-limite))
+    (cond ((equal modo-jogo 'jogo-pessoa-vs-pc) (funcall modo-jogo diretoria estado-inicial (ler-jogador-inicial) profundidade-limite))
           (t jogo-pc-vs-pc))))
 
 (defun carregar-ficheiros (diretoria)
@@ -24,7 +25,7 @@
 ;; Funções de jogo ;;
 ;;;;;;;;;;;;;;;;;;;;;
 
-(defun jogo-pessoa-vs-pc (estado jogador profundidade)
+(defun jogo-pessoa-vs-pc (diretoria estado jogador profundidade)
   (progn
     (imprime-tabuleiro estado)
     (let* ((nova-jogada (cond ((= jogador 1) (jogar-humano estado))
@@ -33,10 +34,13 @@
       (cond ((not (jogada-validap novo-estado)) (progn
                                                   (format t "Jogada invalida~%")
                                                   (jogo-pessoa-vs-pc novo-estado jogador profundidade)))
-            ((tabuleiro-preenchidop (no-tabuleiro novo-estado)) (vencedor (no-caixas novo-estado)))
-            (t (cond ((jogada-caixa-fechadap estado (no-tabuleiro novo-estado)) (jogo-pessoa-vs-pc novo-estado jogador profundidade))
-                     (t (jogo-pessoa-vs-pc novo-estado (trocar-jogador jogador) profundidade))))))))
-
+            (t (let* ((escrever-ecra (imprimir-jogada diretoria nova-jogada jogador))
+                      (escrever-ficheiro (escrever-no-log diretoria nova-jogada jogador)))
+                 (cond ((tabuleiro-preenchidop (no-tabuleiro novo-estado)) (vencedor (no-caixas novo-estado)))
+                       ((jogada-caixa-fechadap estado (no-tabuleiro novo-estado)) (jogo-pessoa-vs-pc diretoria novo-estado jogador profundidade))
+                       (t (jogo-pessoa-vs-pc diretoria novo-estado (trocar-jogador jogador) profundidade)))))))))
+;escrever-no-log (diretoria jogada jogador)
+;imprimir-jogada (diretoria jogada jogador)
 (defun jogo-pc-vs-pc ()
   "Não implementado")
 
@@ -123,37 +127,35 @@
     (format t "~A ~%" (get-arcos-horizontais (no-tabuleiro tabuleiro)))
     (format t "~A ~%~%" (get-arcos-verticais (no-tabuleiro tabuleiro)))))
 
-;;o programa deverá escrever num ficheiro log.dat e no ecrã qual a jogada realizada, o novo estado, o número de nós analisados, o número de cortes efetuados (de cada tipo) e o tempo gasto.
 (defun imprimir-jogada (diretoria jogada jogador)
-  (let ((jogada-realizada (car jogada))
-        (jogada-estado (car (cdr jogada))))
-      (progn
-        (format stream "Linha - ~A; Coluna - ~A; Operação - ~A ~%" (first jogada-realizada) (second jogada-realizada) (third jogada-realizada))
-        (format stream "Estado atual: ~A ~%" (no-tabuleiro no-solucao))
-        (cond ((= jogador 2)
-               (format stream "Número de nós analisados: ~A ~%" (estado-no-inicial no-solucao))
-               (format stream "Número de cortes alfa: ~A ~%" nos-gerados nos-expandidos)
-               (format stream "Número de cortes beta: ~A ~%" nos-gerados nos-expandidos)
-               (format stream "~%"))))))
+  (let* ((jogada-realizada (car jogada))
+        (jogada-estado (cdr jogada)))
+    (progn
+      (format t "Linha - ~A; Coluna - ~A; Operação - ~A ~%" (first jogada-realizada) (second jogada-realizada) (third jogada-realizada))
+      (format t "Estado atual: ~A ~%" (no-tabuleiro jogada-estado))
+      (cond ((= jogador 2)
+             (format t "Número de nós analisados: ~A ~%" (get-nos-analisados))
+             (format t "Número de cortes alfa: ~A ~%" (get-cortes-alfa))
+             (format t "Número de cortes beta: ~A ~%" (get-cortes-beta))
+             (format t "~%"))))))
         
 ;;o programa deverá escrever num ficheiro log.dat e no ecrã qual a jogada realizada, o novo estado, o número de nós analisados, o número de cortes efetuados (de cada tipo) e o tempo gasto.
-(defun escrever-no-log (diretoria jogada)
+(defun escrever-no-log (diretoria jogada jogador)
   "Permite escrever no final do ficheiro log.dat as seguintes informações do problema, o estado inicial, a solução encontrada, o número de nós gerados e o número de nós expandidos"
   (with-open-file (stream (concatenate 'string diretoria "\\log.dat")
-                         :direction :output
-                         :if-exists :append
-                         :if-does-not-exist :create)
-    (let ((nos-gerados (+ (length *abertos*)(length *fechados*)))
-          (nos-expandidos (length *fechados*)))
+                          :direction :output
+                          :if-exists :append
+                          :if-does-not-exist :create)
+    (let* ((jogada-realizada (car jogada))
+          (jogada-estado (cdr jogada)))
       (progn
-        (format stream "Algoritmo utilizado - ~A, ~@[~A~] ~%" algoritmo heuristica)
-        (format stream "Solução encontrada: ~A ~%" (no-tabuleiro no-solucao))
-        (format stream "Estado inicial: ~A ~%" (estado-no-inicial no-solucao))
-        (format stream "Número de nós gerados: ~A | Número de nós expandidos: ~A ~%" nos-gerados nos-expandidos)
-        (format stream "Penetrância: ~A | Factor de ramificação medio: ~A | Tempo de execução: ~A ~%" (penetrancia (no-profundidade no-solucao) nos-gerados) (bisseccao 'f-fator-ramificacao 0 10 no-solucao) tempo-execucao)
-        (format stream "Caminho ~%")
-        (escreve-lista-nos no-solucao stream)
-        (format stream "~% ~% ~%")))))
+        (format stream "Linha - ~A; Coluna - ~A; Operação - ~A ~%" (first jogada-realizada) (second jogada-realizada) (third jogada-realizada))
+        (format stream "Estado atual: ~A ~%" (no-tabuleiro jogada-estado))
+        (cond ((= jogador 2)
+               (format stream "Número de nós analisados: ~A ~%" (get-nos-analisados))
+               (format stream "Número de cortes alfa: ~A ~%" (get-cortes-alfa))
+               (format stream "Número de cortes beta: ~A ~%" (get-cortes-beta))))
+        (format stream "~%~%")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Funções auxiliares ;;
