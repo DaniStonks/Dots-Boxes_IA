@@ -139,9 +139,9 @@
              (format t "Número de cortes beta: ~A ~%" (get-cortes-beta))))
       (format t "~%"))))
         
-;;o programa deverá escrever num ficheiro log.dat e no ecrã qual a jogada realizada, o novo estado, o número de nós analisados, o número de cortes efetuados (de cada tipo) e o tempo gasto.
+
 (defun escrever-no-log (diretoria jogada jogador)
-  "Permite escrever no final do ficheiro log.dat as seguintes informações do problema, o estado inicial, a solução encontrada, o número de nós gerados e o número de nós expandidos"
+  "Permite escrever no final do ficheiro log.dat as seguintes informações do problema, a jogada realizada, o estado atual, o número de nós analisados e o número de cortes(de cada tipo)"
   (with-open-file (stream (concatenate 'string diretoria "\\log.dat")
                           :direction :output
                           :if-exists :append
@@ -149,6 +149,8 @@
     (let* ((jogada-realizada (car jogada))
           (jogada-estado (cdr jogada)))
       (progn
+        (cond ((= jogador 1) (format stream "Jogador 1")
+               (t "Jogador 2")))
         (format stream "Linha - ~A; Coluna - ~A; Operação - ~A ~%" (first jogada-realizada) (second jogada-realizada) (third jogada-realizada))
         (format stream "Estado atual: ~A ~%" (no-tabuleiro jogada-estado))
         (cond ((= jogador 2)

@@ -1,0 +1,11 @@
+Linha - 1; Coluna - 1; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((1 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Linha - 1; Coluna - 1; Operação - ARCO-VERTICAL 
+Estado atual: ((((1 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((2 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 72 
+Número de cortes alfa: 70 
+Número de cortes beta: 0 
+
+
