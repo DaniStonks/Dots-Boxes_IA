@@ -96,25 +96,23 @@ Para utilizar o programa é necessária realizar os seguintes passos:
   * **Listas horizontais** - Que são ligações entre pontos adjacentes horizontalmente, sendo que 0 significa que não há arco entre dois pontos e 1 significa que existe um arco entre dois pontos.
   * **Listas verticais** - Que são ligações entre pontos adjacentes verticalmente, sendo que 0 significa que não há arco entre dois pontos e 1 significa que existe um arco entre dois pontos.
 * **Profundidade limite** - É o limite verticalmente até onde o algoritmo **MiniMax com cortes Alfa-beta** irá fazer a procura dos nós, ou seja, é o nivel de profundidade até onde se quer que o algoritmo **MiniMax com cortes Alfa-beta** pesquise por uma solução.
-* **Função de utilidade** - :
-  * **Número de caixas fechadas** - Esta heurística apenas se foca em comparar o número de caixas fechadas no estado atual com o número de caixas necessárias para acabar o problema.
-  * **Numero de caixas fechadas e numero de caixas perto de fechar** - Esta heurística é mais eficiente, pois para além de ter a heurística anterior como base, também verifica as caixas com 3 lados fechados e com 2 lados.
+* **Função de utilidade** - Faz a avaliação do estado do jogo de um tabuleiro em que:
+  * Pontua +10 por cada caixa do MAX(Computador)
+  * Pontua -10 por cada caixa do MIN(Adversario)
+  * Pontua +5 por cada caixa com 3 lados fechados
+  * Pontua -5 por cada caixa com 2 lados fechados
 
 ### **Output**
 
-* **Solução final** - Devolve uma lista com o caminho percorrido até ao nó solução, a estrutura da mesma é a seguinte:
-
-  1. Devolve o estado que é o estado em que o tabuleiro se encontra quando é encontrado o nó solução;
-  2. Devolve a que nível de profundidade foi encontrado esse nó;
-  3. Devolve o valor heurístico do nó caso o algoritmo escolhido seja o **A***;
-  4. Devolve o valor do custo do nó, ou seja, ```valor heurístico + nível profundidade```;
-* **Algoritmo usado** - Qual o algoritmo utilizado.
-* **Heurística usada** - Qual a heurística utilizada, só quando se usa o algoritmo **A***.
-* **Número de nós gerados** - É o número de nós que foram necessários criar para chegar ao nó solução.
-* **Número de nós expandidos** - É o número de nós que foram necessários percorrer para chegar ao nó solução.
-* **Penetrância** - É uma medida de eficiência que varia entre 0 e 1 e que quanto mais perto de 0 melhor é o algoritmo usado.
-* **Fator de ramificação média** - É uma medida de eficiência em que o intervalo de variação é entre 1 e $+\infty$ e que quanto mais perto de 1 melhor, pois significa que só é necessario ter 1 sucessor para chegar a solução ótima.
-* **Tempo de Execução** - É o tempo, em segundos, que o programa demorou a chegar ao nó solução.
+* **Estado atual** - Mostra o estado atual do tabuleiro após cada jogada.
+* **Jogador vencedor** - Qual o jogador vencedor do jogo.
+* **Jogada efetuada** - Quais os parametros usados para a jogada feita, que é constituida por:
+  * **Linha escolhida** - Número da linha que o jogador selecionou para inserir o arco pretendido.
+  * **Coluna escolhida** - Número da coluna que o jogador selecionou para inserir o arco pretendido.
+  * **Operação escolhida** - Qual o arco que o jogador colocou no tabuleiro para efetuar a sua jogada.
+* **Número de nós analisados** - Número de nós que o computador analisou para chegar a sua jogada.
+* **Número de cortes alfa** - Número de nós que foram cortados pelo computador através de cortes por $\alpha$
+* **Número de cortes beta** - Número de nós que foram cortados pelo computador através de cortes por $\beta$
 
 ## 5. Exemplo de aplicação
 
