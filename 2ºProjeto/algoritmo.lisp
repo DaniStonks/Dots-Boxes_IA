@@ -31,6 +31,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun filtrar-nos-filhos (nos)
+  "Função para remover os nós em que o tabuleiro seja NIL"
   (reduce 'append (mapcar (lambda (no)
                             (cond((null (no-tabuleiro no)) NIL)
                                  (t (list no))))
@@ -42,6 +43,7 @@
 ;;Teste: (alfabeta (tabuleiro-teste) -99999 99999 (operadores) 'sucessores 'avaliacao 2 2)
 ;;Resultado: 5
 (defun alfabeta (no alfa beta operadores sucessores avaliacao profundidade jogador)
+  "Algoritmo de procura da melhor jogada possivel implementado com MiniMax com cortes Alfa-Beta"
   (labels ((maximizar (nos alf bet &optional (valor -10000000))
              (cond ((null nos) alf)
                    (t (let* ((temp-valor (max valor (alfabeta (car nos) alf bet operadores sucessores avaliacao (1- profundidade) (trocar-jogador jogador))))

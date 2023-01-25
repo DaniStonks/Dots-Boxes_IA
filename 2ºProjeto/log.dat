@@ -1,0 +1,496 @@
+Jogador 1
+Linha - 1; Coluna - 1; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((1 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
+Linha - 1; Coluna - 1; Operação - ARCO-VERTICAL 
+Estado atual: ((((1 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((2 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 33133 
+Número de cortes alfa: 0 
+Número de cortes beta: 4690 
+
+
+Jogador 1
+Linha - 1; Coluna - 2; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((1 1 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((2 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 1
+Linha - 1; Coluna - 2; Operação - ARCO-VERTICAL 
+Estado atual: ((((0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((0 1 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
+Linha - 1; Coluna - 2; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((0 2 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((0 1 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 4830 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 1; Coluna - 3; Operação - ARCO-VERTICAL 
+Estado atual: ((((0 2 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((0 1 1 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
+Linha - 1; Coluna - 1; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((0 1 1 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 4556 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 2; Coluna - 4; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 0 0 0 0) (0 0 0 1 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((0 1 1 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
+Linha - 1; Coluna - 3; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 0 0 0) (0 0 0 1 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((0 1 1 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 4290 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 1; Coluna - 1; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 0 0 0) (0 0 0 1 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((1 1 1 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
+Linha - 1; Coluna - 4; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 0 0 0) (0 0 0 1 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 4032 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 1; Coluna - 4; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 0 0) (0 0 0 1 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
+Linha - 1; Coluna - 5; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 0) (0 0 0 1 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 3782 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 5; Coluna - 1; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 0) (0 0 0 1 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (1 0 0 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
+Linha - 1; Coluna - 6; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (0 0 0 1 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (1 0 0 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 3540 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 5; Coluna - 2; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (0 0 0 1 0 0) (0 0 0 0 0 0) (0 0 0 0 0 0) (1 1 0 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
+Linha - 3; Coluna - 2; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (0 0 0 1 0 0) (0 2 0 0 0 0) (0 0 0 0 0 0) (1 1 0 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 3306 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 5; Coluna - 2; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (0 0 0 1 0 0) (0 2 0 0 0 0) (0 0 0 0 0 0) (1 1 0 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 1 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
+Linha - 3; Coluna - 4; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (0 0 0 1 0 0) (0 2 0 2 0 0) (0 0 0 0 0 0) (1 1 0 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (0 1 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 3080 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 5; Coluna - 1; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (0 0 0 1 0 0) (0 2 0 2 0 0) (0 0 0 0 0 0) (1 1 0 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (1 1 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
+Linha - 2; Coluna - 1; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 0 0 1 0 0) (0 2 0 2 0 0) (0 0 0 0 0 0) (1 1 0 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (1 1 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 2862 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 5; Coluna - 3; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 0 0 1 0 0) (0 2 0 2 0 0) (0 0 0 0 0 0) (1 1 1 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 0 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (1 1 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
+Linha - 2; Coluna - 2; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 0 0 1 0 0) (0 2 0 2 0 0) (0 0 0 0 0 0) (1 1 1 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 2 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (1 1 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+Número de nós analisados: 2652 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 2; Coluna - 3; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 0 1 1 0 0) (0 2 0 2 0 0) (0 0 0 0 0 0) (1 1 1 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 2 0 0 0) (0 0 0 0 0) (0 0 0 0 0) (1 1 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 0)) 
+
+
+Jogador 2
+Linha - 4; Coluna - 1; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 0 1 1 0 0) (0 2 0 2 0 0) (0 0 0 0 0 0) (1 1 1 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 2 0 0 0) (0 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 1)) 
+Número de nós analisados: 2450 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 2; Coluna - 2; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 0 0) (0 2 0 2 0 0) (0 0 0 0 0 0) (1 1 1 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 2 0 0 0) (0 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (0 0 0 0 0) (0 0 0 0 0))) (0 1)) 
+Número de nós analisados: 2352 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 6; Coluna - 1; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 0 0) (0 2 0 2 0 0) (0 0 0 0 0 0) (1 1 1 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 2 0 0 0) (0 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 0 0 0 0) (0 0 0 0 0))) (0 1)) 
+
+
+Jogador 2
+Linha - 2; Coluna - 6; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 0 2) (0 2 0 2 0 0) (0 0 0 0 0 0) (1 1 1 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 2 0 0 0) (0 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 0 0 0 0) (0 0 0 0 0))) (0 1)) 
+Número de nós analisados: 2162 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 6; Coluna - 2; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 0 2) (0 2 0 2 0 0) (0 0 0 0 0 0) (1 1 1 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 2 0 0 0) (0 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (0 1)) 
+
+
+Jogador 2
+Linha - 2; Coluna - 5; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (0 2 0 2 0 0) (0 0 0 0 0 0) (1 1 1 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 2 0 0 0) (0 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (0 2)) 
+Número de nós analisados: 1980 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 3; Coluna - 6; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (0 2 0 2 0 2) (0 0 0 0 0 0) (1 1 1 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 0) (0 2 0 0 0) (0 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (0 2)) 
+Número de nós analisados: 1892 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 1; Coluna - 5; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (0 2 0 2 0 2) (0 0 0 0 0 0) (1 1 1 0 0 0) (0 0 0 0 0 0)) ((1 1 1 2 1) (0 2 0 0 0) (0 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (0 2)) 
+
+
+Jogador 2
+Linha - 6; Coluna - 1; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (0 2 0 2 0 2) (0 0 0 0 0 0) (1 1 1 0 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (0 2 0 0 0) (0 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (0 2)) 
+Número de nós analisados: 1722 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 2; Coluna - 1; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (0 2 0 2 0 2) (0 0 0 0 0 0) (1 1 1 0 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 0 0 0) (0 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (1 2)) 
+
+
+Jogador 1
+Linha - 4; Coluna - 2; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (0 2 0 2 0 2) (0 1 0 0 0 0) (1 1 1 0 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 0 0 0) (0 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (1 2)) 
+
+
+Jogador 2
+Linha - 2; Coluna - 4; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (0 2 0 2 0 2) (0 1 0 0 0 0) (1 1 1 0 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 0 2 0) (0 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (1 2)) 
+Número de nós analisados: 1482 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 3; Coluna - 3; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (0 2 1 2 0 2) (0 1 0 0 0 0) (1 1 1 0 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 0 2 0) (0 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (1 2)) 
+
+
+Jogador 2
+Linha - 3; Coluna - 1; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (0 2 1 2 0 2) (0 1 0 0 0 0) (1 1 1 0 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 0 2 0) (2 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (1 4)) 
+Número de nós analisados: 1332 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 2; Coluna - 3; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (0 2 1 2 0 2) (0 1 0 0 0 0) (1 1 1 0 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 0) (2 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (1 4)) 
+Número de nós analisados: 1260 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 3; Coluna - 5; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (0 2 1 2 1 2) (0 1 0 0 0 0) (1 1 1 0 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 0) (2 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (2 4)) 
+
+
+Jogador 1
+Linha - 3; Coluna - 1; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (0 1 0 0 0 0) (1 1 1 0 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 0) (2 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (3 4)) 
+
+
+Jogador 1
+Linha - 5; Coluna - 4; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (0 1 0 0 0 0) (1 1 1 1 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 0) (2 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (3 4)) 
+
+
+Jogador 2
+Linha - 4; Coluna - 1; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 0 0 0 0) (1 1 1 1 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 0) (2 0 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (3 6)) 
+Número de nós analisados: 992 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 3; Coluna - 2; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 0 0 0 0) (1 1 1 1 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 0) (2 2 0 0 0) (2 0 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (3 7)) 
+Número de nós analisados: 930 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 4; Coluna - 2; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 0 0 0 0) (1 1 1 1 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 0) (2 2 0 0 0) (2 2 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (0 0 0 0 0))) (3 9)) 
+Número de nós analisados: 870 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 7; Coluna - 1; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 0 0 0 0) (1 1 1 1 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 0) (2 2 0 0 0) (2 2 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (2 0 0 0 0))) (3 10)) 
+Número de nós analisados: 812 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 7; Coluna - 2; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 0 0 0 0) (1 1 1 1 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 0) (2 2 0 0 0) (2 2 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (2 2 0 0 0))) (3 11)) 
+Número de nós analisados: 756 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 2; Coluna - 5; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 0 0 0 0) (1 1 1 1 0 0) (2 0 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 0 0 0) (2 2 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (2 2 0 0 0))) (3 12)) 
+Número de nós analisados: 702 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 6; Coluna - 2; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 0 0 0 0) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 0 0 0) (2 2 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (2 2 0 0 0))) (3 12)) 
+Número de nós analisados: 650 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 3; Coluna - 3; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 0 0 0 0) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 0 0) (2 2 0 0 0) (1 1 0 0 0) (1 1 0 0 0) (2 2 0 0 0))) (4 12)) 
+
+
+Jogador 1
+Linha - 4; Coluna - 3; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 0 0 0 0) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 0 0) (2 2 1 0 0) (1 1 0 0 0) (1 1 0 0 0) (2 2 0 0 0))) (4 12)) 
+
+
+Jogador 2
+Linha - 4; Coluna - 4; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 0 2 0 0) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 0 0) (2 2 1 0 0) (1 1 0 0 0) (1 1 0 0 0) (2 2 0 0 0))) (4 12)) 
+Número de nós analisados: 506 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 5; Coluna - 3; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 0 2 0 0) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 0 0) (2 2 1 0 0) (1 1 1 0 0) (1 1 0 0 0) (2 2 0 0 0))) (5 12)) 
+
+
+Jogador 1
+Linha - 6; Coluna - 3; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 0 2 0 0) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 0 0) (2 2 1 0 0) (1 1 1 0 0) (1 1 1 0 0) (2 2 0 0 0))) (5 12)) 
+
+
+Jogador 2
+Linha - 4; Coluna - 6; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 0 2 0 2) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 0 0) (2 2 1 0 0) (1 1 1 0 0) (1 1 1 0 0) (2 2 0 0 0))) (5 12)) 
+Número de nós analisados: 380 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 4; Coluna - 3; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 0 2) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 0 0) (2 2 1 0 0) (1 1 1 0 0) (1 1 1 0 0) (2 2 0 0 0))) (6 12)) 
+
+
+Jogador 1
+Linha - 4; Coluna - 5; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 0 0) (2 2 1 0 0) (1 1 1 0 0) (1 1 1 0 0) (2 2 0 0 0))) (7 12)) 
+
+
+Jogador 1
+Linha - 4; Coluna - 4; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 0 0) (2 2 1 1 0) (1 1 1 0 0) (1 1 1 0 0) (2 2 0 0 0))) (7 12)) 
+
+
+Jogador 2
+Linha - 3; Coluna - 4; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 0) (2 2 1 1 0) (1 1 1 0 0) (1 1 1 0 0) (2 2 0 0 0))) (7 14)) 
+Número de nós analisados: 240 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 7; Coluna - 3; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 0) (2 2 1 1 0) (1 1 1 0 0) (1 1 1 0 0) (2 2 2 0 0))) (7 15)) 
+Número de nós analisados: 210 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 3; Coluna - 5; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 0) (1 1 1 0 0) (1 1 1 0 0) (2 2 2 0 0))) (7 16)) 
+Número de nós analisados: 182 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 5; Coluna - 4; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 0) (1 1 1 2 0) (1 1 1 0 0) (2 2 2 0 0))) (7 17)) 
+Número de nós analisados: 156 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 4; Coluna - 5; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 2) (1 1 1 2 0) (1 1 1 0 0) (2 2 2 0 0))) (7 17)) 
+Número de nós analisados: 132 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 5; Coluna - 5; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 0 0) (2 2 0 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 2) (1 1 1 2 1) (1 1 1 0 0) (2 2 2 0 0))) (7 17)) 
+
+
+Jogador 2
+Linha - 6; Coluna - 3; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 0 0) (2 2 2 0 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 2) (1 1 1 2 1) (1 1 1 0 0) (2 2 2 0 0))) (7 18)) 
+Número de nós analisados: 90 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 6; Coluna - 4; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 0 0) (2 2 2 2 0 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 2) (1 1 1 2 1) (1 1 1 0 0) (2 2 2 0 0))) (7 19)) 
+Número de nós analisados: 72 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 6; Coluna - 5; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 0 0) (2 2 2 2 2 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 2) (1 1 1 2 1) (1 1 1 0 0) (2 2 2 0 0))) (7 19)) 
+Número de nós analisados: 56 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 6; Coluna - 4; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 0 0) (2 2 2 2 2 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 2) (1 1 1 2 1) (1 1 1 1 0) (2 2 2 0 0))) (7 19)) 
+
+
+Jogador 2
+Linha - 5; Coluna - 5; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 2 0) (2 2 2 2 2 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 2) (1 1 1 2 1) (1 1 1 1 0) (2 2 2 0 0))) (7 20)) 
+Número de nós analisados: 30 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 6; Coluna - 5; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 2 0) (2 2 2 2 2 0)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 2) (1 1 1 2 1) (1 1 1 1 2) (2 2 2 0 0))) (7 21)) 
+Número de nós analisados: 20 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 6; Coluna - 6; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 2 0) (2 2 2 2 2 2)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 2) (1 1 1 2 1) (1 1 1 1 2) (2 2 2 0 0))) (7 21)) 
+Número de nós analisados: 12 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 1
+Linha - 5; Coluna - 6; Operação - ARCO-HORIZONTAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 2 1) (2 2 2 2 2 2)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 2) (1 1 1 2 1) (1 1 1 1 2) (2 2 2 0 0))) (7 21)) 
+
+
+Jogador 2
+Linha - 7; Coluna - 4; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 2 1) (2 2 2 2 2 2)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 2) (1 1 1 2 1) (1 1 1 1 2) (2 2 2 2 0))) (7 22)) 
+Número de nós analisados: 2 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+
+Jogador 2
+Linha - 7; Coluna - 5; Operação - ARCO-VERTICAL 
+Estado atual: ((((2 2 2 1 2 2) (2 2 1 1 2 2) (1 2 1 2 1 2) (2 1 1 2 1 2) (1 1 1 1 2 1) (2 2 2 2 2 2)) ((1 1 1 2 1) (1 2 2 2 2) (2 2 1 2 2) (2 2 1 1 2) (1 1 1 2 1) (1 1 1 1 2) (2 2 2 2 2))) (7 23)) 
+Número de nós analisados: 0 
+Número de cortes alfa: 0 
+Número de cortes beta: 0 
+
+

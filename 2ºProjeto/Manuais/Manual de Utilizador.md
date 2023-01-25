@@ -79,10 +79,14 @@ Para utilizar o programa é necessária realizar os seguintes passos:
 * Computador
 * Humano
 
-**10.** Por fim é escolher qual o tipo de arco que irá querer colocar entre:
+**10.** Escolher qual o tipo de arco que irá querer colocar entre:
 
 * **Arco Horizontal**
 * **Arco Vertical**
+
+**11.** Escolher a linha em que deseja inserir o arco.
+
+**12.** Escolher a coluna em que deseja inserir o arco.
 
 ## 4. Input/Output  
 
@@ -91,30 +95,24 @@ Para utilizar o programa é necessária realizar os seguintes passos:
 * **Tabuleiro** - É a representação de um tabuleiro que este é constituido por:
   * **Listas horizontais** - Que são ligações entre pontos adjacentes horizontalmente, sendo que 0 significa que não há arco entre dois pontos e 1 significa que existe um arco entre dois pontos.
   * **Listas verticais** - Que são ligações entre pontos adjacentes verticalmente, sendo que 0 significa que não há arco entre dois pontos e 1 significa que existe um arco entre dois pontos.
-* **Algoritmo** - É a escolha do algoritmo de procura a usar no problema escolhido.
-  * **BFS** - Algoritmo **_Breadth-First Search_**, em que a tradução para português é Algoritmo de **Procura em Largura**, em que o que é feito é percorrer lateralmente os nós e consegue sempre encontrar a solução ótima se esta existir.
-  * **DFS** - Algoritmo **_Depth-First Search_**, em que a tradução para português é Algoritmo de **Procura em Profundidade**, em que o que é feito é percorrer verticalmente os nós, este nem sempre encontra a solução ótima e é menos eficiente que o **BFS** e o **A***.
-  * **A*** - Algoritmo A* em que o que é feito é utilizar métodos heurísticos em que se avalia os custos dos nós de modo a encontrar os melhores caminhos para a solução final, visto isto este algoritmo consegue sempre encontrar a solução ótima e será o mais eficiente dos outros dois acima falados.
-* **Profundidade limite** - É o limite verticalmente até onde o algoritmo **DFS** irá fazer a procura dos nós, ou seja, é o nivel de profundidade até onde se quer que o algoritmo **DFS** pesquise por uma solução.
-* **Heuristica a usar** - É a escolha do método heurístico que o algoritmo **A*** irá usar para chegar a solução final do problema, em que pode-se optar por estes dois:
-  * **Número de caixas fechadas** - Esta heurística apenas se foca em comparar o número de caixas fechadas no estado atual com o número de caixas necessárias para acabar o problema.
-  * **Numero de caixas fechadas e numero de caixas perto de fechar** - Esta heurística é mais eficiente, pois para além de ter a heurística anterior como base, também verifica as caixas com 3 lados fechados e com 2 lados.
+* **Profundidade limite** - É o limite verticalmente até onde o algoritmo **MiniMax com cortes Alfa-beta** irá fazer a procura dos nós, ou seja, é o nivel de profundidade até onde se quer que o algoritmo **MiniMax com cortes Alfa-beta** pesquise por uma solução.
+* **Função de utilidade** - Faz a avaliação do estado do jogo de um tabuleiro em que:
+  * Pontua +10 por cada caixa do MAX(Computador)
+  * Pontua -10 por cada caixa do MIN(Adversario)
+  * Pontua +5 por cada caixa com 3 lados fechados
+  * Pontua -5 por cada caixa com 2 lados fechados
 
 ### **Output**
 
-* **Solução final** - Devolve uma lista com o caminho percorrido até ao nó solução, a estrutura da mesma é a seguinte:
-
-  1. Devolve o estado que é o estado em que o tabuleiro se encontra quando é encontrado o nó solução;
-  2. Devolve a que nível de profundidade foi encontrado esse nó;
-  3. Devolve o valor heurístico do nó caso o algoritmo escolhido seja o **A***;
-  4. Devolve o valor do custo do nó, ou seja, ```valor heurístico + nível profundidade```;
-* **Algoritmo usado** - Qual o algoritmo utilizado.
-* **Heurística usada** - Qual a heurística utilizada, só quando se usa o algoritmo **A***.
-* **Número de nós gerados** - É o número de nós que foram necessários criar para chegar ao nó solução.
-* **Número de nós expandidos** - É o número de nós que foram necessários percorrer para chegar ao nó solução.
-* **Penetrância** - É uma medida de eficiência que varia entre 0 e 1 e que quanto mais perto de 0 melhor é o algoritmo usado.
-* **Fator de ramificação média** - É uma medida de eficiência em que o intervalo de variação é entre 1 e $+\infty$ e que quanto mais perto de 1 melhor, pois significa que só é necessario ter 1 sucessor para chegar a solução ótima.
-* **Tempo de Execução** - É o tempo, em segundos, que o programa demorou a chegar ao nó solução.
+* **Estado atual** - Mostra o estado atual do tabuleiro após cada jogada.
+* **Jogador vencedor** - Qual o jogador vencedor do jogo.
+* **Jogada efetuada** - Quais os parametros usados para a jogada feita, que é constituida por:
+  * **Linha escolhida** - Número da linha que o jogador selecionou para inserir o arco pretendido.
+  * **Coluna escolhida** - Número da coluna que o jogador selecionou para inserir o arco pretendido.
+  * **Operação escolhida** - Qual o arco que o jogador colocou no tabuleiro para efetuar a sua jogada.
+* **Número de nós analisados** - Número de nós que o computador analisou para chegar a sua jogada.
+* **Número de cortes alfa** - Número de nós que foram cortados pelo computador através de cortes por $\alpha$
+* **Número de cortes beta** - Número de nós que foram cortados pelo computador através de cortes por $\beta$
 
 ## 5. Exemplo de aplicação
 
@@ -122,7 +120,7 @@ Para utilizar o programa é necessária realizar os seguintes passos:
 
 <center>
   <figure>
-    <img src="">
+    <img src="Ecrã inicial.png">
        <figcaption> Ecrã Inicial </figcaption>
   </figure>
 </center>
@@ -131,34 +129,70 @@ Para utilizar o programa é necessária realizar os seguintes passos:
 
 <center>
   <figure>
-    <img src="">
+    <img src="Escolha da diretoria.png">
        <figcaption> Ecrã de Escolha de diretoria </figcaption>
   </figure>
 </center>
 
-3. Após a escolha da diretoria o utilizador terá que escolher qual o problema quer resolver.
+3. Após a escolha da diretoria o utilizador terá que escolher qual o modo de jogo que pretende jogar.
 
 <center>
   <figure>
-    <img src="">
-       <figcaption> Ecrã de Escolha do problema a resolver </figcaption>
+    <img src="Escolha do modo.png">
+       <figcaption> Ecrã de Escolha do modo de jogo que pretende jogar </figcaption>
   </figure>
 </center>
 
-4. De seguida o utilizador escolherá qual o algoritmo que pretende utilizar para resolver o problema selecionado.
+4. De seguida o utilizador escolherá qual a profundidade maxima do tabuleiro de jogo.
 
 <center>
   <figure>
-    <img src="">
-       <figcaption> Ecrã de Escolha do algoritmo de pesquisa </figcaption>
+    <img src="Escolha de profundidade limite.png">
+       <figcaption> Ecrã de Escolha da profundidade maxima </figcaption>
   </figure>
 </center>
 
-5. Por fim o utilizador irá receber as estatisticas após o algoritmo resolver o problema.
+5. Após ter selecionado a profundidade maxima irá escolher-se qual o jogador a começar em 1º lugar.
 
 <center>
   <figure>
-    <img src="">
-       <figcaption> Ecrã de Estatisticas de resolução do problema </figcaption>
+    <img src="Escolha do 1ª a jogar.png">
+       <figcaption> Ecrã de Escolha do 1º jogador </figcaption>
+  </figure>
+</center>
+
+6. Escolher qual o tipo de arco que pretende inserir, caso seja a 1ª pessoa a jogar.
+
+<center>
+  <figure>
+    <img src="Escolha do tipo de arco a introduzir.png">
+       <figcaption> Ecrã de Escolha do tipo de arco a inserir </figcaption>
+  </figure>
+</center>
+
+7. Após ter selecionado o tipo de arco pretendido será pedido as coordenadas do mesmo, mais concretamente em que linha quer inserir.
+
+<center>
+  <figure>
+    <img src="Escolha da linha que quer introduzir o arco.png">
+       <figcaption> Ecrã de Escolha da linha a inserir o arco selecionado </figcaption>
+  </figure>
+</center>
+
+8. Ainda para as coordenadas do arco é necessario escolher a coluna em que o mesmo será introduzido.
+
+<center>
+  <figure>
+    <img src="Escolha da coluna que quer introduzir o arco.png">
+       <figcaption> Ecrã de Escolha da coluna a inserir o arco selecionado </figcaption>
+  </figure>
+</center>
+
+9. Por fim retorna o tabuleiro com a jogada efetuada pelo utilizador
+
+<center>
+  <figure>
+    <img src="Retorno do tabuleiro após colocar o arco.png">
+       <figcaption> Ecrã de Retorno do tabuleiro com a jogada indicada </figcaption>
   </figure>
 </center>
